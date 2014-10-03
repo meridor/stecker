@@ -1,4 +1,19 @@
 # Plugin Engine
+
+## Table of Contents
+* [Purpose](#purpose)
+* [Glossary](#glossary)
+* [Plugin Structure](#plugin-structure)
+  * [Plugin Manifest Fields](#plugin-manifest-fields)
+  * [Dependencies and Version Specification](#dependencies-and-version-specification)
+* [Extension Points](#extension-points)
+* [Basic Usage](#basic-usage)
+* [Exceptions](#exceptions)
+* [Internals](#internals)
+* [Extras](#extras)
+  * [Maven File Provider](#maven-file-provider)
+
+
 ## Purpose
 Large applications very often provide plugin functionality. This library is a simple implementation of such plugin functionality that can be easily integrated to your project.
 
