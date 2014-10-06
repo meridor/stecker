@@ -89,13 +89,13 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
         assertFalse(getField(manifest, ManifestField.VERSION).isPresent()); //Missing field
     }
 
-    @Test(expected = PluginException.class)
-    public void testGetMissingRequireField() throws PluginException {
+    @Test(expected = ManifestException.class)
+    public void testGetMissingRequireField() throws PluginException, ManifestException {
         getRequiredField(new Manifest(), ManifestField.NAME);
     }
 
     @Test
-    public void testGetDependenciesList() throws PluginException {
+    public void testGetDependenciesList() throws ManifestException {
         Manifest manifest = JarHelper.createManifest(manifestContents);
         List<Dependency> list = getDependenciesList(manifest, ManifestField.DEPENDS);
         assertEquals(2, list.size());
@@ -104,17 +104,17 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
     }
 
     @Test
-    public void testGetEmptyDependenciesList() throws PluginException {
+    public void testGetEmptyDependenciesList() throws ManifestException {
         assertTrue(getDependenciesList(new Manifest(), ManifestField.DEPENDS).isEmpty());
     }
 
-    @Test(expected = PluginException.class)
-    public void testGetIncorrectDependency() throws PluginException {
+    @Test(expected = ManifestException.class)
+    public void testGetIncorrectDependency() throws ManifestException {
         getDependency("some" + VERSION_DELIMITER + "incorrect" + VERSION_DELIMITER + "dependency");
     }
 
-    @Test(expected = PluginException.class)
-    public void testGetDateField() throws PluginException {
+    @Test(expected = ManifestException.class)
+    public void testGetDateField() throws PluginException, ManifestException {
         Manifest manifest = JarHelper.createManifest(new HashMap<String, String>(){
             {
                 put(ManifestField.DATE.getFieldName(), "invalid-date");

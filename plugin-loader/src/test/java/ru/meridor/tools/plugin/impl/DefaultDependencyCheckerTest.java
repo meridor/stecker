@@ -63,6 +63,7 @@ public class DefaultDependencyCheckerTest {
             }, new Dependency[0]));
         } catch (PluginException e) {
             assertTrue(e.getDependencyProblem().isPresent());
+            assertTrue(e.getPluginMetadata().isPresent());
             missingDependencies.addAll(e.getDependencyProblem().get().getMissingDependencies());
         }
         assertEquals(2, missingDependencies.size());

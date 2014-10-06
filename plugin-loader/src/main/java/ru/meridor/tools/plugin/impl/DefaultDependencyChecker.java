@@ -45,7 +45,7 @@ public class DefaultDependencyChecker implements DependencyChecker {
                         missingRequiredDependencies.size(),
                         presentConflictingDependencies.size()
                 )
-            )
+            ).withPlugin(pluginMetadata)
             .withDependencyProblem(
                     new DependencyProblemContainer(missingRequiredDependencies, presentConflictingDependencies)
             );

@@ -20,8 +20,7 @@ public class DefaultFileFilterTest {
     @Parameterized.Parameters(name = "name = {0} must give accept = {1}")
     public static Collection combinations() {
         return Arrays.asList(new Object[][]{
-                {"something" + DefaultFileFilter.PLUGIN_SUFFIX, true},
-                {"something" + DefaultFileFilter.PLUGIN_SUFFIX + "End", false},
+                {"my-plugin.jar", true},
                 {"not-matching-name", false}
         });
     }

@@ -190,8 +190,8 @@ public class PluginLoader {
      */
     public PluginRegistry load() throws PluginException {
 
-        List<File> pluginFiles = getFileProvider().provide().stream()
-                .filter(getFileFilter()::accept)
+        List<File> pluginFiles = getFileProvider().provide()
+                .stream().filter(getFileFilter()::accept)
                 .collect(Collectors.toList());
 
         PluginRegistry pluginRegistry = new PluginRegistryContainer();
