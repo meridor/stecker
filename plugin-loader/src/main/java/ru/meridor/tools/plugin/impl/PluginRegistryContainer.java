@@ -28,7 +28,7 @@ public class PluginRegistryContainer implements PluginRegistry {
         if (providedDependency.isPresent()){
             Optional<PluginMetadata> anotherPlugin = getPlugin(providedDependency.get().getName());
             if (anotherPlugin.isPresent()){
-                throw new PluginException("Another plugin providing the same virtual dependency found")
+                throw new PluginException("Another plugin providing the same virtual dependency found: " + anotherPlugin.get().getName())
                         .withDependencyProblem(new DependencyProblemContainer(
                                 Collections.emptyList(),
                                 new ArrayList<Dependency>(){

@@ -41,8 +41,8 @@ public class DefaultManifestReader implements ManifestReader {
             );
 
             return pluginMetadata;
-        } catch (Throwable e) {
-            throw new PluginException(e);
+        } catch (Exception e) {
+            throw new PluginException("Invalid manifest in plugin file " + pluginFile.getAbsolutePath(), e);
         }
     }
 
@@ -54,15 +54,15 @@ public class DefaultManifestReader implements ManifestReader {
         return Optional.ofNullable(manifest.getMainAttributes().getValue(field.getFieldName()));
     }
 
-    protected String getRequiredField(Manifest manifest, ManifestField field) throws PluginException {
+    protected String getRequiredField(Manifest manifest, ManifestField field) throws ManifestException {
         Optional<String> value = getField(manifest, field);
         if (!value.isPresent()){
-            throw new PluginException(String.format("Required field %s not found in plugin manifest", field.getFieldName()));
+            throw new ManifestException(String.format("Required field %s not found in plugin manifest", field.getFieldName()));
         }
         return value.get();
     }
 
-    protected List<Dependency> getDependenciesList(Manifest manifest, ManifestField field) throws PluginException {
+    protected List<Dependency> getDependenciesList(Manifest manifest, ManifestField field) throws ManifestException {
         Optional<String> value = getField(manifest, field);
         if (!value.isPresent()) {
             return Collections.emptyList();
@@ -75,24 +75,31 @@ public class DefaultManifestReader implements ManifestReader {
         return dependenciesList;
     }
 
-    protected Dependency getDependency(String rawDependency) throws PluginException {
+    protected Dependency getDependency(String rawDependency) throws ManifestException {
         String[] nameAndVersion = rawDependency.split(VERSION_DELIMITER);
         switch (nameAndVersion.length) {
             case 1: return new DependencyContainer(nameAndVersion[0].trim());
             case 2: return new DependencyContainer(nameAndVersion[0].trim(), nameAndVersion[1].trim());
-            default: throw new PluginException(String.format("Invalid dependency specification: %s", rawDependency));
+            default: throw new ManifestException(String.format("Invalid dependency specification: %s", rawDependency));
         }
     }
 
-    protected Optional<ZonedDateTime> getDateField(Manifest manifest, ManifestField field) throws PluginException {
+    protected Optional<ZonedDateTime> getDateField(Manifest manifest, ManifestField field) throws ManifestException {
         try {
             Optional<String> value = getField(manifest, field);
             if (!value.isPresent()){
                 return Optional.empty();
             }
             return Optional.of(ZonedDateTime.parse(value.get(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        } catch (Throwable e) {
-            throw new PluginException(e);
+        } catch (Exception e) {
+            throw new ManifestException(String.format("Invalid date and time specification"));
+        }
+    }
+
+    protected class ManifestException extends Exception {
+
+        public ManifestException(String message) {
+            super(message);
         }
     }
 

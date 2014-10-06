@@ -5,11 +5,11 @@ import java.io.FileFilter;
 
 public class DefaultFileFilter implements FileFilter {
 
-    public static final String PLUGIN_SUFFIX = "-plugin.jar";
-
     @Override
     public boolean accept(File fileName) {
-        return (fileName != null) && fileName.getAbsolutePath().endsWith(PLUGIN_SUFFIX);
+        return (fileName != null) &&
+                fileName.getName().contains("plugin") &&
+                fileName.getName().endsWith("jar");
     }
 
 }

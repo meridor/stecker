@@ -46,6 +46,7 @@ public class PluginLoaderTest {
         PluginLoader.withFileProvider(null);
     }
 
+    //TODO: migrate to in-memory file system!
     @Test
     public void testLoad() throws Exception {
         final String PLUGIN_NAME = "plugin-name";
