@@ -1,12 +1,15 @@
 package ru.meridor.tools.plugin;
 
 import org.junit.Test;
-import ru.meridor.tools.plugin.impl.*;
+import ru.meridor.tools.plugin.impl.FileSystemHelper;
+import ru.meridor.tools.plugin.impl.ManifestField;
+import ru.meridor.tools.plugin.impl.data.PluginImpl;
+import ru.meridor.tools.plugin.impl.data.TestExtensionPoint;
+import ru.meridor.tools.plugin.impl.data.TestExtensionPointImpl;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.Manifest;
 
@@ -17,36 +20,35 @@ public class PluginLoaderTest {
 
     @Test
     public void testFluentApi() throws PluginException {
-        FileProvider fileProvider = mock(FileProvider.class);
+        Path pluginDirectory = Paths.get("plugin-directory");
+        String fileGlob = "some-glob";
+        Path cacheDirectory = Paths.get("cache-directory");
         Class[] extensionPoints = new Class[]{TestExtensionPoint.class, TestExtensionPoint.class}; //We explicitly duplicate extension points
-        FileFilter fileFilter = mock(FileFilter.class);
         ManifestReader manifestReader = mock(ManifestReader.class);
         DependencyChecker dependencyChecker = mock(DependencyChecker.class);
         ClassesScanner classesScanner = mock(ClassesScanner.class);
-        ClassLoader classLoader = mock(ClassLoader.class);
         PluginLoader pluginLoader = PluginLoader
-                .withFileProvider(fileProvider)
+                .withPluginDirectory(pluginDirectory)
+                .withFileGlob(fileGlob)
+                .withCacheDirectory(cacheDirectory)
                 .withExtensionPoints(extensionPoints)
-                .withFileFilter(fileFilter)
                 .withManifestReader(manifestReader)
                 .withDependencyChecker(dependencyChecker)
-                .withClassesScanner(classesScanner)
-                .withClassLoader(classLoader);
-        assertEquals(fileProvider, pluginLoader.getFileProvider());
+                .withClassesScanner(classesScanner);
+        assertEquals(pluginDirectory, pluginLoader.getPluginDirectory());
         assertEquals(new ArrayList<Class>(new HashSet<>(Arrays.asList(extensionPoints))), pluginLoader.getExtensionPoints());
-        assertEquals(fileFilter, pluginLoader.getFileFilter());
+        assertEquals(cacheDirectory, pluginLoader.getCacheDirectory());
+        assertEquals(fileGlob, pluginLoader.getFileGlob());
         assertEquals(manifestReader, pluginLoader.getManifestReader());
         assertEquals(dependencyChecker, pluginLoader.getDependencyChecker());
         assertEquals(classesScanner, pluginLoader.getClassesScanner());
-        assertEquals(classLoader, pluginLoader.getClassLoader());
     }
 
     @Test(expected = PluginException.class)
     public void testIncorrectFileProvider() throws PluginException {
-        PluginLoader.withFileProvider(null);
+        PluginLoader.withPluginDirectory(null);
     }
 
-    //TODO: migrate to in-memory file system!
     @Test
     public void testLoad() throws Exception {
         final String PLUGIN_NAME = "plugin-name";
@@ -58,18 +60,18 @@ public class PluginLoaderTest {
             }
         };
         Manifest manifest = JarHelper.createManifest(manifestContents);
-        File tempDirectory = null;
+        //Can't use in-memory filesystems (e.g. Google JimFS) here because they don't support java.net.URL for class loader
+        Path tempDirectory = FileSystemHelper.createTempDirectory();
         try {
-            tempDirectory = Files.createTempDirectory("plugin-loader", new FileAttribute[0]).toFile();
             assertNotNull(tempDirectory);
-            JarHelper.createJarFile(
+            assertTrue(Files.exists(tempDirectory));
+            JarHelper.createTestPluginFile(
                     tempDirectory,
-                    "test-plugin.jar",
-                    manifest,
-                    TestExtensionPointImpl.class, PluginImpl.class);
+                    Optional.of(manifest)
+            );
 
             PluginRegistry pluginRegistry = PluginLoader
-                    .withFileProvider(new DefaultFileProvider(tempDirectory))
+                    .withPluginDirectory(tempDirectory)
                     .withExtensionPoints(TestExtensionPoint.class)
                     .load();
 
@@ -85,15 +87,7 @@ public class PluginLoaderTest {
             assertEquals(1, pluginRegistry.getImplementations(TestExtensionPoint.class).size());
             assertTrue(pluginRegistry.getImplementations(TestExtensionPoint.class).contains(TestExtensionPointImpl.class));
         } finally {
-            if (tempDirectory != null && tempDirectory.exists() && tempDirectory.isDirectory()) {
-                File[] files = tempDirectory.listFiles();
-                if (files != null) {
-                    for (File file : files){
-                        assertTrue(file.delete());
-                    }
-                }
-                assertTrue(tempDirectory.delete());
-            }
+            FileSystemHelper.removeDirectory(tempDirectory);
         }
     }
 }

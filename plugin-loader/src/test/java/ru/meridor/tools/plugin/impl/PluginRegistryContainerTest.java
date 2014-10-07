@@ -5,6 +5,8 @@ import ru.meridor.tools.plugin.Dependency;
 import ru.meridor.tools.plugin.PluginException;
 import ru.meridor.tools.plugin.PluginMetadata;
 import ru.meridor.tools.plugin.PluginRegistry;
+import ru.meridor.tools.plugin.impl.data.TestExtensionPoint;
+import ru.meridor.tools.plugin.impl.data.TestExtensionPointImpl;
 
 import java.util.ArrayList;
 import java.util.Optional;
