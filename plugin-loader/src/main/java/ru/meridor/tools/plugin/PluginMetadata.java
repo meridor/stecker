@@ -1,6 +1,6 @@
 package ru.meridor.tools.plugin;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +23,10 @@ public interface PluginMetadata {
     String getVersion();
 
     /**
-     * Returns {@link File} object corresponding to plugin file
-     * @return plugin {@link File} object
+     * Returns {@link Path} object corresponding to plugin file
+     * @return plugin {@link Path} object
      */
-    File getFile();
+    Path getPath();
 
     /**
      * Returns {@link Dependency} object corresponding to this plugin

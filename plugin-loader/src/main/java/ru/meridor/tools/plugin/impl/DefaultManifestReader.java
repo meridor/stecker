@@ -5,12 +5,13 @@ import ru.meridor.tools.plugin.ManifestReader;
 import ru.meridor.tools.plugin.PluginException;
 import ru.meridor.tools.plugin.PluginMetadata;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 public class DefaultManifestReader implements ManifestReader {
@@ -19,7 +20,7 @@ public class DefaultManifestReader implements ManifestReader {
     public static final String VERSION_DELIMITER = "=";
 
     @Override
-    public PluginMetadata read(File pluginFile) throws PluginException {
+    public PluginMetadata read(Path pluginFile) throws PluginException {
         try {
             Manifest manifest = getManifest(pluginFile);
             PluginMetadataContainer pluginMetadata = new PluginMetadataContainer(
@@ -42,12 +43,13 @@ public class DefaultManifestReader implements ManifestReader {
 
             return pluginMetadata;
         } catch (Exception e) {
-            throw new PluginException("Invalid manifest in plugin file " + pluginFile.getAbsolutePath(), e);
+            throw new PluginException("Invalid manifest in plugin file " + pluginFile.toAbsolutePath(), e);
         }
     }
 
-    protected Manifest getManifest(File pluginFile) throws IOException {
-        return new JarFile(pluginFile).getManifest();
+    protected Manifest getManifest(Path pluginFile) throws IOException {
+        JarInputStream jarStream = new JarInputStream(Files.newInputStream(pluginFile));
+        return jarStream.getManifest();
     }
 
     protected Optional<String> getField(Manifest manifest, ManifestField field) {

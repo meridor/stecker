@@ -6,8 +6,9 @@ import ru.meridor.tools.plugin.JarHelper;
 import ru.meridor.tools.plugin.PluginException;
 import ru.meridor.tools.plugin.PluginMetadata;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -44,13 +45,13 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
     };
 
     @Override
-    protected Manifest getManifest(File pluginFile) throws IOException {
+    protected Manifest getManifest(Path pluginFile) throws IOException {
         return JarHelper.createManifest(manifestContents);
     }
 
     @Test
     public void testRead() throws PluginException {
-        final File FILE = new File("missing-file");
+        final Path FILE = Paths.get("missing-file");
         PluginMetadata pluginMetadata = read(FILE);
         assertEquals(NAME, pluginMetadata.getName());
         assertEquals(VERSION, pluginMetadata.getVersion());
@@ -58,7 +59,7 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
         assertEquals(Optional.of(DESCRIPTION), pluginMetadata.getDescription());
         assertEquals(Optional.of(MAINTAINER), pluginMetadata.getMaintainer());
         assertEquals(new DependencyContainer(NAME, VERSION), pluginMetadata.getDependency());
-        assertEquals(FILE, pluginMetadata.getFile());
+        assertEquals(FILE, pluginMetadata.getPath());
 
         List<Dependency> requiredDependencies = pluginMetadata.getRequiredDependencies();
         assertEquals(2, requiredDependencies.size());

@@ -16,7 +16,6 @@
     </properties>
 
     <modules>
-        <module>maven-file-provider</module>
         <module>plugin-loader</module>
     </modules>
 

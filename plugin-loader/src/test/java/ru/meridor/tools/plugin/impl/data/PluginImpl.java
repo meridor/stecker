@@ -1,4 +1,4 @@
-package ru.meridor.tools.plugin.impl;
+package ru.meridor.tools.plugin.impl.data;
 
 import ru.meridor.tools.plugin.Plugin;
 

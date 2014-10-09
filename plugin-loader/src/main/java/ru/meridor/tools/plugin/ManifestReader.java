@@ -1,6 +1,6 @@
 package ru.meridor.tools.plugin;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface ManifestReader {
 
@@ -9,6 +9,6 @@ public interface ManifestReader {
      * @param pluginFile plugin file to process
      * @return plugin information in {@link PluginMetadata} format
      */
-    PluginMetadata read(File pluginFile) throws PluginException;
+    PluginMetadata read(Path pluginFile) throws PluginException;
 
 }

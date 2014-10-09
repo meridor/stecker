@@ -3,7 +3,7 @@ package ru.meridor.tools.plugin.impl;
 import ru.meridor.tools.plugin.Dependency;
 import ru.meridor.tools.plugin.PluginMetadata;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class PluginMetadataContainer implements PluginMetadata {
 
     private final String version;
 
-    private final File filePath;
+    private final Path filePath;
 
     private Optional<ZonedDateTime> date;
 
@@ -29,7 +29,7 @@ public class PluginMetadataContainer implements PluginMetadata {
 
     private Optional<Dependency> provides;
 
-    public PluginMetadataContainer(String name, String version, File filePath) {
+    public PluginMetadataContainer(String name, String version, Path filePath) {
         this.name = name;
         this.version = version;
         this.filePath = filePath;
@@ -46,7 +46,7 @@ public class PluginMetadataContainer implements PluginMetadata {
     }
 
     @Override
-    public File getFile() {
+    public Path getPath() {
         return filePath;
     }
 
