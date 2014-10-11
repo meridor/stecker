@@ -11,7 +11,7 @@ public enum ManifestField {
     CONFLICTS("Plugin-Conflicts"),
     PROVIDES("Plugin-Provides");
 
-    private String fieldName;
+    private final String fieldName;
 
     private ManifestField(String fieldName) {
         this.fieldName = fieldName;

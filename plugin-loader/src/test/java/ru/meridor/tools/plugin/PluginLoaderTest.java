@@ -36,7 +36,8 @@ public class PluginLoaderTest {
                 .withDependencyChecker(dependencyChecker)
                 .withClassesScanner(classesScanner);
         assertEquals(pluginDirectory, pluginLoader.getPluginDirectory());
-        assertEquals(new ArrayList<Class>(new HashSet<>(Arrays.asList(extensionPoints))), pluginLoader.getExtensionPoints());
+        List<Class> extensionPointsList = new ArrayList<Class>(new HashSet<>(Arrays.asList(extensionPoints)));
+        assertEquals(extensionPointsList, pluginLoader.getExtensionPoints());
         assertEquals(cacheDirectory, pluginLoader.getCacheDirectory());
         assertEquals(fileGlob, pluginLoader.getFileGlob());
         assertEquals(manifestReader, pluginLoader.getManifestReader());
@@ -53,7 +54,7 @@ public class PluginLoaderTest {
     public void testLoad() throws Exception {
         final String PLUGIN_NAME = "plugin-name";
         final String PLUGIN_VERSION = "plugin-version";
-        Map<String, String> manifestContents = new HashMap<String, String>(){
+        Map<String, String> manifestContents = new HashMap<String, String>() {
             {
                 put(ManifestField.NAME.getFieldName(), PLUGIN_NAME);
                 put(ManifestField.VERSION.getFieldName(), PLUGIN_VERSION);
@@ -66,6 +67,7 @@ public class PluginLoaderTest {
             assertNotNull(tempDirectory);
             assertTrue(Files.exists(tempDirectory));
             JarHelper.createTestPluginFile(
+                    "some-plugin",
                     tempDirectory,
                     Optional.of(manifest)
             );

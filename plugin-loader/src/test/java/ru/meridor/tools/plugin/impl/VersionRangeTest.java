@@ -49,17 +49,17 @@ public class VersionRangeTest {
     )
     public static Collection combinations() {
         return Arrays.asList(new Object[][]{
-            {"[1.0,2.0]", true, "1.0", true, "2.0", true, "1.0", true},
-            {"(1.0,2.0)", true, "1.0", false, "2.0", false, "2.0", false},
-            {"[1.0,2.0)", true, "1.0", true, "2.0", false, "1.0", true},
-            {"(1.0,2.0]", true, "1.0", false, "2.0", true, "1.0", false},
-            {"(,2.0]", true, "", false, "2.0", true, "1.0", true},
-            {"[1.0,)", true, "1.0", true, "", false, "2.0", true},
-            {"(,)", true, "", false, "", false, "any", true},
-            {"1.0", false, "", false, "", false, "any", false},
-            {"abc", false, "", false, "", false, null, false},
-            {null, false, "", false, "", false, "any", false},
-            {"1.0,2.0", false, "", false, "", false, "any", false}
+                {"[1.0,2.0]", true, "1.0", true, "2.0", true, "1.0", true},
+                {"(1.0,2.0)", true, "1.0", false, "2.0", false, "2.0", false},
+                {"[1.0,2.0)", true, "1.0", true, "2.0", false, "1.0", true},
+                {"(1.0,2.0]", true, "1.0", false, "2.0", true, "1.0", false},
+                {"(,2.0]", true, "", false, "2.0", true, "1.0", true},
+                {"[1.0,)", true, "1.0", true, "", false, "2.0", true},
+                {"(,)", true, "", false, "", false, "any", true},
+                {"1.0", false, "", false, "", false, "any", false},
+                {"abc", false, "", false, "", false, null, false},
+                {null, false, "", false, "", false, "any", false},
+                {"1.0,2.0", false, "", false, "", false, "any", false}
         });
     }
 

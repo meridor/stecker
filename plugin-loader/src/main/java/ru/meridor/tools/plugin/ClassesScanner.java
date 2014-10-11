@@ -12,7 +12,8 @@ public interface ClassesScanner {
     /**
      * Returns a mapping between extension point classes and plugin file classes. E.g. if extension point is
      * an interface <b>A</b> and some plugin implements it in classes B and C then the mapping will be: A -> (B, C).
-     * @param pluginFile plugin file to process
+     *
+     * @param pluginFile      plugin file to process
      * @param extensionPoints a list extension point classes
      * @return mapping from extension point to implementations from a plugin
      * @throws PluginException

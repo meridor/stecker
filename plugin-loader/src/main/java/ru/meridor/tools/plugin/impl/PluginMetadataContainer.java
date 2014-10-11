@@ -16,17 +16,11 @@ public class PluginMetadataContainer implements PluginMetadata {
     private final String version;
 
     private final Path filePath;
-
+    private final List<Dependency> depends = new ArrayList<>();
+    private final List<Dependency> conflicts = new ArrayList<>();
     private Optional<ZonedDateTime> date;
-
     private Optional<String> description;
-
     private Optional<String> maintainer;
-
-    private List<Dependency> depends = new ArrayList<>();
-
-    private List<Dependency> conflicts = new ArrayList<>();
-
     private Optional<Dependency> provides;
 
     public PluginMetadataContainer(String name, String version, Path filePath) {
@@ -60,14 +54,26 @@ public class PluginMetadataContainer implements PluginMetadata {
         return date;
     }
 
+    public void setDate(Optional<ZonedDateTime> date) {
+        this.date = date;
+    }
+
     @Override
     public Optional<String> getDescription() {
         return description;
     }
 
+    public void setDescription(Optional<String> description) {
+        this.description = description;
+    }
+
     @Override
     public Optional<String> getMaintainer() {
         return maintainer;
+    }
+
+    public void setMaintainer(Optional<String> maintainer) {
+        this.maintainer = maintainer;
     }
 
     @Override
@@ -83,18 +89,6 @@ public class PluginMetadataContainer implements PluginMetadata {
     @Override
     public Optional<Dependency> getProvidedDependency() {
         return provides;
-    }
-
-    public void setDate(Optional<ZonedDateTime> date) {
-        this.date = date;
-    }
-
-    public void setDescription(Optional<String> description) {
-        this.description = description;
-    }
-
-    public void setMaintainer(Optional<String> maintainer) {
-        this.maintainer = maintainer;
     }
 
     public void setProvidedDependency(Optional<Dependency> provides) {

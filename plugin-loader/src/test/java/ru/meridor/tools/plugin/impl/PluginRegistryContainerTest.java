@@ -51,7 +51,7 @@ public class PluginRegistryContainerTest {
     @Test
     public void testExtensionPointsRegistry() {
         PluginRegistry pluginRegistry = new PluginRegistryContainer();
-        pluginRegistry.addImplementations(TestExtensionPoint.class, new ArrayList<Class>(){
+        pluginRegistry.addImplementations(TestExtensionPoint.class, new ArrayList<Class>() {
             {
                 add(TestExtensionPointImpl.class);
             }

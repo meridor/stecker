@@ -33,8 +33,8 @@ public class DependencyContainer implements Dependency {
                 getName().equals(((Dependency) obj).getName()) &&
                 (
                         getVersion().equals(((Dependency) obj).getVersion()) ||
-                        !getVersion().isPresent() ||
-                        !((Dependency) obj).getVersion().isPresent()
+                                !getVersion().isPresent() ||
+                                !((Dependency) obj).getVersion().isPresent()
                 );
     }
 
