@@ -8,7 +8,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileSystemHelper {
-    
+
+    private FileSystemHelper() {
+    }
+
     public static Path createTempDirectory() throws IOException {
         return Files.createTempDirectory("test");
     }
@@ -28,6 +31,5 @@ public class FileSystemHelper {
             }
         });
     }
-
 
 }

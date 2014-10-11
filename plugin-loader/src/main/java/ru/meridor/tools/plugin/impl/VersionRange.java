@@ -1,6 +1,6 @@
 package ru.meridor.tools.plugin.impl;
 
-public class VersionRange {
+class VersionRange {
 
     private String startVersion = "";
 
@@ -16,12 +16,12 @@ public class VersionRange {
         parse(range);
     }
 
-    private void parse(String range){
-        if (range == null){
+    private void parse(String range) {
+        if (range == null) {
             return;
         }
         String[] startEnd = range.trim().split(",");
-        if (startEnd.length != 2){
+        if (startEnd.length != 2) {
             return;
         }
         String start = startEnd[0].trim();
@@ -32,8 +32,8 @@ public class VersionRange {
         boolean endExcluded = end.endsWith(")");
         if (
                 (!startIncluded && !startExcluded) ||
-                (!endIncluded && !endExcluded)
-        ){
+                        (!endIncluded && !endExcluded)
+                ) {
             return;
         }
         this.startVersionIncluded = startIncluded;
@@ -64,7 +64,7 @@ public class VersionRange {
     }
 
     public boolean contains(String version) {
-        if (version == null || !isValid()){
+        if (version == null || !isValid()) {
             return false;
         }
         boolean isStartVersionOk = isStartVersionIncluded() ?

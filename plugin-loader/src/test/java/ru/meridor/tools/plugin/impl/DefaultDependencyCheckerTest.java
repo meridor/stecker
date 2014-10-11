@@ -13,27 +13,25 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class DefaultDependencyCheckerTest {
 
     private static final String MISSING_NAME = "missing";
-    private static final String FIXED_VERSION_NAME = "fixed";
-    private static final String VERSION_RANGE_NAME = "range";
-
     private static final Dependency MISSING_DEPENDENCY = new DependencyContainer(MISSING_NAME);
+    private static final String FIXED_VERSION_NAME = "fixed";
     private static final Dependency DEPENDENCY_WITH_FIXED_VERSION = new DependencyContainer(FIXED_VERSION_NAME, "1.0");
+    private static final String VERSION_RANGE_NAME = "range";
     private static final Dependency DEPENDENCY_WITH_VERSION_RANGE = new DependencyContainer(VERSION_RANGE_NAME, "[1.0,1.1]");
 
     private static PluginMetadata getPluginDependenciesMetadata(final Dependency[] requiredDependencies, final Dependency[] conflictingDependencies) {
         PluginMetadata pluginMetadata = mock(PluginMetadata.class);
-        when(pluginMetadata.getRequiredDependencies()).thenReturn(new ArrayList<Dependency>(){
+        when(pluginMetadata.getRequiredDependencies()).thenReturn(new ArrayList<Dependency>() {
             {
                 addAll(Arrays.asList(requiredDependencies));
             }
         });
-        when(pluginMetadata.getConflictingDependencies()).thenReturn(new ArrayList<Dependency>(){
+        when(pluginMetadata.getConflictingDependencies()).thenReturn(new ArrayList<Dependency>() {
             {
                 addAll(Arrays.asList(conflictingDependencies));
             }
@@ -41,10 +39,10 @@ public class DefaultDependencyCheckerTest {
         return pluginMetadata;
     }
 
-    private static Optional<PluginMetadata> getPluginIdentityMetadata(String name, String version) {
+    private static Optional<PluginMetadata> getPluginIdentityMetadata(String name) {
         PluginMetadata pluginMetadata = mock(PluginMetadata.class);
         when(pluginMetadata.getName()).thenReturn(name);
-        when(pluginMetadata.getVersion()).thenReturn(version);
+        when(pluginMetadata.getVersion()).thenReturn("1.1");
         return Optional.of(pluginMetadata);
     }
 
@@ -52,9 +50,9 @@ public class DefaultDependencyCheckerTest {
     public void testRequiredDependencyMissing() {
         PluginRegistry pluginRegistry = mock(PluginRegistry.class);
         doReturn(Optional.empty()).when(pluginRegistry).getPlugin(eq(MISSING_NAME));
-        doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME, "1.1"))
+        doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME))
                 .when(pluginRegistry).getPlugin(eq(FIXED_VERSION_NAME));
-        doReturn(getPluginIdentityMetadata(VERSION_RANGE_NAME, "1.1"))
+        doReturn(getPluginIdentityMetadata(VERSION_RANGE_NAME))
                 .when(pluginRegistry).getPlugin(eq(VERSION_RANGE_NAME));
         List<Dependency> missingDependencies = new ArrayList<>();
         try {
@@ -74,9 +72,9 @@ public class DefaultDependencyCheckerTest {
     @Test
     public void testConflictingDependencyPresent() {
         PluginRegistry pluginRegistry = mock(PluginRegistry.class);
-        doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME, "1.1"))
+        doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME))
                 .when(pluginRegistry).getPlugin(eq(FIXED_VERSION_NAME));
-        doReturn(getPluginIdentityMetadata(VERSION_RANGE_NAME, "1.1"))
+        doReturn(getPluginIdentityMetadata(VERSION_RANGE_NAME))
                 .when(pluginRegistry).getPlugin(eq(VERSION_RANGE_NAME));
         List<Dependency> conflictingDependencies = new ArrayList<>();
         try {

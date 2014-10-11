@@ -22,13 +22,12 @@ import java.util.stream.Collectors;
 
 public class DefaultClassesScanner implements ClassesScanner {
 
-    public static final String JAR_FILE_EXTENSION = ".jar";
-    public static final String CLASS_FILE_EXTENSION = ".class";
-    public static final String JAR_DIRECTORY_SEPARATOR = "/";
-    public static final String PACKAGE_SEPARATOR = ".";
     public static final String JARS_DIRECTORY = "lib";
     public static final String PLUGIN_IMPL_FILE = "plugin.jar";
-
+    private static final String JAR_FILE_EXTENSION = ".jar";
+    private static final String CLASS_FILE_EXTENSION = ".class";
+    private static final String JAR_DIRECTORY_SEPARATOR = "/";
+    private static final String PACKAGE_SEPARATOR = ".";
     private final Path cacheDirectory;
 
     public DefaultClassesScanner(Path cacheDirectory) {
@@ -54,7 +53,7 @@ public class DefaultClassesScanner implements ClassesScanner {
         Path pluginStorageDirectory = cacheDirectory.resolve(pluginName);
 
         if (Files.exists(pluginStorageDirectory)) {
-            if (!Files.isDirectory(pluginStorageDirectory)){
+            if (!Files.isDirectory(pluginStorageDirectory)) {
                 throw new IOException("Plugin cache directory is not a directory");
             }
             if (fileIsNewerThan(pluginStorageDirectory, pluginFile)) {
@@ -64,12 +63,12 @@ public class DefaultClassesScanner implements ClassesScanner {
         }
 
         Files.createDirectories(pluginStorageDirectory);
-        
+
         unpackJar(pluginFile, pluginStorageDirectory);
-        
+
         return pluginStorageDirectory;
     }
-        
+
     private void unpackJar(Path pluginFile, Path pluginStorageDirectory) throws IOException {
 
         try (JarFile jarFile = new JarFile(pluginFile.toFile())) {
@@ -83,7 +82,7 @@ public class DefaultClassesScanner implements ClassesScanner {
                 }
 
                 Path parentDirectory = outputPath.getParent();
-                if (!Files.exists(parentDirectory)){
+                if (!Files.exists(parentDirectory)) {
                     Files.createDirectories(parentDirectory);
                 }
 
@@ -114,12 +113,12 @@ public class DefaultClassesScanner implements ClassesScanner {
         try {
             Path libDirectory = unpackedPluginDirectory.resolve(JARS_DIRECTORY);
             List<URL> urls = new ArrayList<>();
-            if (Files.exists(libDirectory) && Files.isDirectory(libDirectory)){
+            if (Files.exists(libDirectory) && Files.isDirectory(libDirectory)) {
                 List<URI> uris = Files.list(libDirectory)
                         .filter(Files::isRegularFile)
                         .map(Path::toUri)
                         .collect(Collectors.toList());
-                for (URI uri: uris){
+                for (URI uri : uris) {
                     urls.add(uri.toURL());
                 }
             }
@@ -141,13 +140,13 @@ public class DefaultClassesScanner implements ClassesScanner {
                 String className = entry.getName()
                         .replace(JAR_DIRECTORY_SEPARATOR, PACKAGE_SEPARATOR)
                         .replace(CLASS_FILE_EXTENSION, "");
-                if (className.startsWith(PACKAGE_SEPARATOR) && className.length() > 1){
+                if (className.startsWith(PACKAGE_SEPARATOR) && className.length() > 1) {
                     className = className.substring(1);
                 }
                 Class<?> currentClass = Class.forName(className, true, classLoader);
-                for (Class<?> extensionPoint: extensionPoints) {
-                    if (extensionPoint.isAssignableFrom(currentClass)){
-                        if (!matchingClasses.containsKey(extensionPoint)){
+                for (Class<?> extensionPoint : extensionPoints) {
+                    if (extensionPoint.isAssignableFrom(currentClass)) {
+                        if (!matchingClasses.containsKey(extensionPoint)) {
                             matchingClasses.put(extensionPoint, new ArrayList<>());
                         }
                         matchingClasses.get(extensionPoint).add(currentClass);

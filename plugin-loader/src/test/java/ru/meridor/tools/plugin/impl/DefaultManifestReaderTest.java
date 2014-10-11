@@ -31,7 +31,7 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
             DEPENDENCY_DELIMITER + " another-conflicting-plugin " + VERSION_DELIMITER + "[1.1,1.2]";
     private static final String PROVIDES = "meta-plugin";
 
-    private static final Map<String, String> manifestContents = new HashMap<String, String>(){
+    private static final Map<String, String> manifestContents = new HashMap<String, String>() {
         {
             put(ManifestField.NAME.getFieldName(), NAME);
             put(ManifestField.VERSION.getFieldName(), VERSION);
@@ -81,7 +81,7 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
 
     @Test
     public void testGetField() {
-        Manifest manifest = JarHelper.createManifest(new HashMap<String, String>(){
+        Manifest manifest = JarHelper.createManifest(new HashMap<String, String>() {
             {
                 put(ManifestField.NAME.getFieldName(), NAME);
             }
@@ -116,7 +116,7 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
 
     @Test(expected = ManifestException.class)
     public void testGetDateField() throws PluginException, ManifestException {
-        Manifest manifest = JarHelper.createManifest(new HashMap<String, String>(){
+        Manifest manifest = JarHelper.createManifest(new HashMap<String, String>() {
             {
                 put(ManifestField.DATE.getFieldName(), "invalid-date");
             }

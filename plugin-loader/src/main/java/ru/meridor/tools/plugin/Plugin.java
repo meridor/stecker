@@ -8,14 +8,18 @@ public interface Plugin {
 
     /**
      * Plugin initialization logic
+     *
      * @throws PluginException
      */
-    default void init() throws PluginException {}
+    default void init() throws PluginException {
+    }
 
     /**
      * Plugin destruction logic
+     *
      * @throws PluginException
      */
-    default void destroy() throws PluginException {}
+    default void destroy() throws PluginException {
+    }
 
 }

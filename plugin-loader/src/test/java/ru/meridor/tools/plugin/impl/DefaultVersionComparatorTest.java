@@ -21,6 +21,12 @@ public class DefaultVersionComparatorTest {
 
     private final VersionRelation relation;
 
+    public DefaultVersionComparatorTest(String required, String actual, VersionRelation relation) {
+        this.required = Optional.ofNullable(required);
+        this.actual = Optional.ofNullable(actual);
+        this.relation = relation;
+    }
+
     @Parameterized.Parameters(name = "{1} must relate as {2} to {0}")
     public static Collection combinations() {
         return Arrays.asList(new Object[][]{
@@ -42,12 +48,6 @@ public class DefaultVersionComparatorTest {
                 {"[1.0,1.1)", "1.1", NOT_IN_RANGE},
                 {"(1.0,1.1)", "1.0", NOT_IN_RANGE}
         });
-    }
-
-    public DefaultVersionComparatorTest(String required, String actual, VersionRelation relation) {
-        this.required = Optional.ofNullable(required);
-        this.actual = Optional.ofNullable(actual);
-        this.relation = relation;
     }
 
     @Test

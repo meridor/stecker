@@ -6,6 +6,7 @@ public interface ManifestReader {
 
     /**
      * Reads jar file manifest and returns plugin information stored there
+     *
      * @param pluginFile plugin file to process
      * @return plugin information in {@link PluginMetadata} format
      */

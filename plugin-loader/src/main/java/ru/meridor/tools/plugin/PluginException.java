@@ -1,6 +1,5 @@
 package ru.meridor.tools.plugin;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -9,8 +8,6 @@ import java.util.Optional;
 public class PluginException extends Exception {
 
     private Optional<DependencyProblem> dependencyProblem = Optional.empty();
-
-    private Optional<Path> pluginFile = Optional.empty();
 
     private Optional<PluginMetadata> pluginMetadata = Optional.empty();
 
@@ -36,32 +33,22 @@ public class PluginException extends Exception {
         return this;
     }
 
-    public PluginException withPluginFile(Path pluginFile) {
-        this.pluginFile = Optional.ofNullable(pluginFile);
-        return this;
-    }
-
     /**
      * Returns dependency problem if any
+     *
      * @return dependency problem
      */
-    public Optional<DependencyProblem> getDependencyProblem(){
+    public Optional<DependencyProblem> getDependencyProblem() {
         return dependencyProblem;
     }
 
     /**
      * Returns plugin affected
+     *
      * @return plugin metadata
      */
     public Optional<PluginMetadata> getPluginMetadata() {
         return pluginMetadata;
     }
 
-    /**
-     * Returns plugin file affected
-     * @return plugin file
-     */
-    public Optional<Path> getPluginFile() {
-        return pluginFile;
-    }
 }
