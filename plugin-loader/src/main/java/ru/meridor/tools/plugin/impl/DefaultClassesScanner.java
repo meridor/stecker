@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 public class DefaultClassesScanner implements ClassesScanner {
 
-    public static final String JARS_DIRECTORY = "lib";
-    public static final String PLUGIN_IMPL_FILE = "plugin.jar";
+    public static final String LIB_DIRECTORY = "lib";
+    public static final String PLUGIN_CLASSES_FILE = "plugin.jar";
     private static final String JAR_FILE_EXTENSION = ".jar";
     private static final String CLASS_FILE_EXTENSION = ".class";
     private static final String JAR_DIRECTORY_SEPARATOR = "/";
@@ -106,12 +106,12 @@ public class DefaultClassesScanner implements ClassesScanner {
     }
 
     private Path getPluginJarPath(Path unpackedPluginDirectory) {
-        return unpackedPluginDirectory.resolve(PLUGIN_IMPL_FILE);
+        return unpackedPluginDirectory.resolve(PLUGIN_CLASSES_FILE);
     }
 
     private ClassLoader getClassLoader(Path unpackedPluginDirectory) throws PluginException {
         try {
-            Path libDirectory = unpackedPluginDirectory.resolve(JARS_DIRECTORY);
+            Path libDirectory = unpackedPluginDirectory.resolve(LIB_DIRECTORY);
             List<URL> urls = new ArrayList<>();
             if (Files.exists(libDirectory) && Files.isDirectory(libDirectory)) {
                 List<URI> uris = Files.list(libDirectory)

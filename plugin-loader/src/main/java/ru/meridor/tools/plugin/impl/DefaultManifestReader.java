@@ -1,9 +1,6 @@
 package ru.meridor.tools.plugin.impl;
 
-import ru.meridor.tools.plugin.Dependency;
-import ru.meridor.tools.plugin.ManifestReader;
-import ru.meridor.tools.plugin.PluginException;
-import ru.meridor.tools.plugin.PluginMetadata;
+import ru.meridor.tools.plugin.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,8 +13,9 @@ import java.util.jar.Manifest;
 
 public class DefaultManifestReader implements ManifestReader {
 
-    static final String DEPENDENCY_DELIMITER = ";";
-    static final String VERSION_DELIMITER = "=";
+    public static final String DEPENDENCY_DELIMITER = ";";
+    public static final String VERSION_DELIMITER = "=";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     @Override
     public PluginMetadata read(Path pluginFile) throws PluginException {
@@ -95,7 +93,7 @@ public class DefaultManifestReader implements ManifestReader {
             if (!value.isPresent()) {
                 return Optional.empty();
             }
-            return Optional.of(ZonedDateTime.parse(value.get(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            return Optional.of(ZonedDateTime.parse(value.get(), DATE_FORMATTER));
         } catch (Exception e) {
             throw new ManifestException(String.format("Invalid date and time specification"));
         }

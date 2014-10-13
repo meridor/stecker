@@ -5,7 +5,7 @@
 
     <groupId>ru.meridor.tools</groupId>
     <artifactId>plugin-engine</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Meridor Plugin Engine</name>
@@ -17,6 +17,7 @@
 
     <modules>
         <module>plugin-loader</module>
+        <module>plugin-generator</module>
     </modules>
 
     <dependencyManagement>
@@ -32,11 +33,6 @@
                 <artifactId>mockito-all</artifactId>
                 <version>1.9.5</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>ru.meridor.tools</groupId>
-                <artifactId>plugin-loader</artifactId>
-                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

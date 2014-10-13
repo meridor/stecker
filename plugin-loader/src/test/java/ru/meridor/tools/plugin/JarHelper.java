@@ -81,8 +81,8 @@ public final class JarHelper {
                 new Class[0],
                 new HashMap<String, Path>() {
                     {
-                        put(DefaultClassesScanner.PLUGIN_IMPL_FILE, pluginJar);
-                        put(Paths.get(DefaultClassesScanner.JARS_DIRECTORY, DEPENDENCY_JAR_NAME).toString(), dependencyFile);
+                        put(DefaultClassesScanner.PLUGIN_CLASSES_FILE, pluginJar);
+                        put(Paths.get(DefaultClassesScanner.LIB_DIRECTORY, DEPENDENCY_JAR_NAME).toString(), dependencyFile);
                         put("uselessDirectory/", directory); //Just to test how directories are processed
                     }
                 }
@@ -98,12 +98,12 @@ public final class JarHelper {
     public static Path[] createUnpackedTestPluginFile(Path directory) throws Exception {
         Path pluginJar = JarHelper.createJarFile(
                 directory,
-                DefaultClassesScanner.PLUGIN_IMPL_FILE,
+                DefaultClassesScanner.PLUGIN_CLASSES_FILE,
                 Optional.empty(),
                 new Class[]{PluginImpl.class, TestExtensionPointImpl.class},
                 Collections.emptyMap()
         );
-        Path libDirectory = directory.resolve(DefaultClassesScanner.JARS_DIRECTORY);
+        Path libDirectory = directory.resolve(DefaultClassesScanner.LIB_DIRECTORY);
         Files.createDirectories(libDirectory);
 
         Path dependencyFile = JarHelper.createJarFile(

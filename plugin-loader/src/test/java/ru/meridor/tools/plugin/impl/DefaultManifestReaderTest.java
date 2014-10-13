@@ -1,10 +1,7 @@
 package ru.meridor.tools.plugin.impl;
 
 import org.junit.Test;
-import ru.meridor.tools.plugin.Dependency;
-import ru.meridor.tools.plugin.JarHelper;
-import ru.meridor.tools.plugin.PluginException;
-import ru.meridor.tools.plugin.PluginMetadata;
+import ru.meridor.tools.plugin.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
