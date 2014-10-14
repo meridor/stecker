@@ -5,6 +5,7 @@ Large applications very often provide plugin functionality. This library is a si
 
 ## Table of Contents
 * [Getting Started](#getting-started)
+  * [Example Project](https://github.com/meridor/plugin-engine-example)
   * [Basic Usage](#basic-usage)
   * [Exceptions](#exceptions)
 * [Creating Plugins](#creating-plugins)

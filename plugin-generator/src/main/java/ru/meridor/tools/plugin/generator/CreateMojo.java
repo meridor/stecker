@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,11 +58,17 @@ public class CreateMojo extends AbstractMojo {
     @Parameter
     private String provides;
 
+    /**
+     * Plugin contents are saved to this directory
+     */
     @Parameter(defaultValue = "${project.build.directory}/plugin-generator/data", required = true)
-    private File pluginDataDirectory;
+    private File dataOutputDirectory;
 
+    /**
+     * Plugin contents from {@link #dataOutputDirectory} are packed to jar which is saved to this directory
+     */
     @Parameter(defaultValue = "${project.build.directory}/plugin-generator", required = true)
-    private File pluginOutputDirectory;
+    private File outputDirectory;
 
     @Parameter(defaultValue = "${project.build.outputDirectory}", readonly = true, required = true)
     private File compiledSourcesDir;
@@ -97,7 +104,7 @@ public class CreateMojo extends AbstractMojo {
     private void copyDependencies() throws IOException {
         getLog().debug("Copying plugin dependencies");
         Set<Artifact> artifacts = project.getArtifacts();
-        Path outputPath = Paths.get(pluginDataDirectory.toURI());
+        Path outputPath = Paths.get(dataOutputDirectory.toURI());
         Path libDirectory = outputPath.resolve(DefaultClassesScanner.LIB_DIRECTORY);
         getLog().debug(String.format("Creating directory to store dependencies: %s", libDirectory.toString()));
         Files.createDirectories(libDirectory);
@@ -112,7 +119,7 @@ public class CreateMojo extends AbstractMojo {
     private void packageCompiledSources() throws DependencyResolutionRequiredException, IOException, ManifestException {
         MavenArchiver archiver = new MavenArchiver();
         archiver.setArchiver(sourcesArchiver);
-        Path pluginJarFile = getPluginDataDirectory().resolve(DefaultClassesScanner.PLUGIN_CLASSES_FILE);
+        Path pluginJarFile = getDataOutputDirectory().resolve(DefaultClassesScanner.PLUGIN_CLASSES_FILE);
         getLog().debug(String.format("Packing plugin sources to %s", pluginJarFile.toString()));
         archiver.setOutputFile(pluginJarFile.toFile());
         sourcesArchiver.addDirectory(compiledSourcesDir);
@@ -125,7 +132,7 @@ public class CreateMojo extends AbstractMojo {
         Path pluginFile = getPluginFile();
         getLog().info(String.format("Creating plugin file: %s", pluginFile));
         archiver.setOutputFile(pluginFile.toFile());
-        pluginArchiver.addDirectory(pluginDataDirectory);
+        pluginArchiver.addDirectory(dataOutputDirectory);
         pluginArchiver.addConfiguredManifest(getPluginManifest());
         archiver.createArchive(session, project, new MavenArchiveConfiguration());
     }
@@ -135,6 +142,7 @@ public class CreateMojo extends AbstractMojo {
         Manifest manifest = new Manifest();
         addAttribute(manifest, ManifestField.NAME.getFieldName(), pluginName);
         addAttribute(manifest, ManifestField.VERSION.getFieldName(), pluginVersion);
+        addAttribute(manifest, ManifestField.DATE.getFieldName(), ZonedDateTime.now().format(DefaultManifestReader.DATE_FORMATTER));
         if (description != null){
             addAttribute(manifest, ManifestField.DESCRIPTION.getFieldName(), description);
         }
@@ -169,12 +177,12 @@ public class CreateMojo extends AbstractMojo {
         manifest.getMainSection().addConfiguredAttribute(new Manifest.Attribute(name, value));
     }
 
-    private Path getPluginDataDirectory() {
-        return Paths.get(pluginDataDirectory.toURI());
+    private Path getDataOutputDirectory() {
+        return Paths.get(dataOutputDirectory.toURI());
     }
 
     private Path getPluginFile() {
-        return Paths.get(pluginOutputDirectory.toURI()).resolve(pluginName + "-" + pluginVersion + ".jar");
+        return Paths.get(outputDirectory.toURI()).resolve(pluginName + "-" + pluginVersion + ".jar");
     }
 
 }
