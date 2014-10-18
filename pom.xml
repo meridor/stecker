@@ -113,15 +113,20 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/meridor/plugin-engine</url>
-        <connection>scm:git@github.com:meridor/plugin-engine.git</connection>
-        <developerConnection>scm:git:git@github.com:meridor/plugin-engine.git</developerConnection>
+        <url>https://github.com/meridor/stecker</url>
+        <connection>scm:git@github.com:meridor/stecker.git</connection>
+        <developerConnection>scm:git:git@github.com:meridor/stecker.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/meridor/plugin-engine/issues</url>
+        <url>https://github.com/meridor/stecker/issues</url>
     </issueManagement>
+
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/meridor/stecker</url>
+    </ciManagement>
 
     <developers>
         <developer>
