@@ -7,7 +7,8 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class VersionRangeTest {
@@ -65,32 +66,32 @@ public class VersionRangeTest {
 
     @Test
     public void testIsValid() {
-        assertEquals(isValid, new VersionRange(range).isValid());
+        assertThat(new VersionRange(range).isValid(), equalTo(isValid));
     }
 
     @Test
     public void testStartVersion() {
-        assertEquals(startVersion, new VersionRange(range).getStartVersion());
+        assertThat(new VersionRange(range).getStartVersion(), equalTo(startVersion));
     }
 
     @Test
     public void testEndVersion() {
-        assertEquals(endVersion, new VersionRange(range).getEndVersion());
+        assertThat(new VersionRange(range).getEndVersion(), equalTo(endVersion));
     }
 
     @Test
     public void testStartVersionIncluded() {
-        assertEquals(isStartVersionIncluded, new VersionRange(range).isStartVersionIncluded());
+        assertThat(new VersionRange(range).isStartVersionIncluded(), equalTo(isStartVersionIncluded));
     }
 
     @Test
     public void testEndVersionIncluded() {
-        assertEquals(isEndVersionIncluded, new VersionRange(range).isEndVersionIncluded());
+        assertThat(new VersionRange(range).isEndVersionIncluded(), equalTo(isEndVersionIncluded));
     }
 
     @Test
     public void testContains() {
-        assertEquals(contains, new VersionRange(range).contains(testVersion));
+        assertThat(new VersionRange(range).contains(testVersion), equalTo(contains));
     }
 
 }

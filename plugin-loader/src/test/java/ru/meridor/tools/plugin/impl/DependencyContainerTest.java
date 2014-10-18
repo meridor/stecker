@@ -8,7 +8,8 @@ import ru.meridor.tools.plugin.Dependency;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class DependencyContainerTest {
@@ -47,12 +48,12 @@ public class DependencyContainerTest {
 
     @Test
     public void testIsVersionPresent() {
-        assertEquals(isVersionPresent, new DependencyContainer(name, version).getVersion().isPresent());
+        assertThat(new DependencyContainer(name, version).getVersion().isPresent(), equalTo(isVersionPresent));
     }
 
     @Test
     public void testEqualsToReference() {
-        assertEquals(equals, referenceDependency.equals(new DependencyContainer(name, version)));
+        assertThat(referenceDependency.equals(new DependencyContainer(name, version)), equalTo(equals));
     }
 
 }

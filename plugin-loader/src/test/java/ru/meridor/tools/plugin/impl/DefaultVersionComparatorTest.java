@@ -9,7 +9,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static ru.meridor.tools.plugin.VersionRelation.*;
 
 @RunWith(Parameterized.class)
@@ -52,6 +53,6 @@ public class DefaultVersionComparatorTest {
 
     @Test
     public void testCompare() {
-        assertEquals(relation, new DefaultVersionComparator().compare(required, actual));
+        assertThat(new DefaultVersionComparator().compare(required, actual), equalTo(relation));
     }
 }
