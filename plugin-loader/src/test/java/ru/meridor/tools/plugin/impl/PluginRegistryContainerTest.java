@@ -11,6 +11,7 @@ import ru.meridor.tools.plugin.impl.data.TestExtensionPointImpl;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,10 +28,10 @@ public class PluginRegistryContainerTest {
         when(pluginMetadata.getProvidedDependency()).thenReturn(Optional.empty());
         pluginRegistry.addPlugin(pluginMetadata);
         assertTrue(pluginRegistry.getPlugin(PLUGIN_NAME).isPresent());
-        assertEquals(PLUGIN_NAME, pluginRegistry.getPlugin(PLUGIN_NAME).get().getName());
+        assertThat(pluginRegistry.getPlugin(PLUGIN_NAME).get().getName(), equalTo(PLUGIN_NAME));
         assertFalse(pluginRegistry.getPlugin(PLUGIN_NAME).get().getProvidedDependency().isPresent());
-        assertEquals(1, pluginRegistry.getPluginNames().size());
-        assertEquals(PLUGIN_NAME, pluginRegistry.getPluginNames().get(0));
+        assertThat(pluginRegistry.getPluginNames(), hasSize(1));
+        assertThat(pluginRegistry.getPluginNames(), contains(PLUGIN_NAME));
     }
 
     @Test(expected = PluginException.class)
@@ -56,9 +57,9 @@ public class PluginRegistryContainerTest {
                 add(TestExtensionPointImpl.class);
             }
         });
-        assertEquals(1, pluginRegistry.getExtensionPoints().size());
-        assertEquals(1, pluginRegistry.getImplementations(TestExtensionPoint.class).size());
-        assertEquals(TestExtensionPointImpl.class, pluginRegistry.getImplementations(TestExtensionPoint.class).get(0));
+        assertThat(pluginRegistry.getExtensionPoints(), hasSize(1));
+        assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), hasSize(1));
+        assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), contains(TestExtensionPointImpl.class));
     }
 
 }

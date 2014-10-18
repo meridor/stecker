@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 public class DefaultClassesScannerTest {
 
@@ -76,17 +76,17 @@ public class DefaultClassesScannerTest {
 
         Map<Class, List<Class>> classesMap = new DefaultClassesScanner(cacheDirectory).scan(pluginFile, extensionPoints);
 
-        assertEquals(2, classesMap.entrySet().size());
-        assertTrue(classesMap.containsKey(Plugin.class));
+        assertThat(classesMap.entrySet(), hasSize(2));
+        assertThat(classesMap, hasKey(Plugin.class));
 
         List<Class> pluginImplementations = classesMap.get(Plugin.class);
-        assertEquals(1, pluginImplementations.size());
-        assertEquals(PluginImpl.class, pluginImplementations.get(0));
-        assertTrue(classesMap.containsKey(TestExtensionPoint.class));
+        assertThat(pluginImplementations, hasSize(1));
+        assertThat(pluginImplementations, contains(PluginImpl.class));
+        assertThat(classesMap, hasKey(TestExtensionPoint.class));
 
         List<Class> testExtensionPointImplementations = classesMap.get(TestExtensionPoint.class);
-        assertEquals(1, testExtensionPointImplementations.size());
-        assertEquals(TestExtensionPointImpl.class, testExtensionPointImplementations.get(0));
+        assertThat(testExtensionPointImplementations, hasSize(1));
+        assertThat(testExtensionPointImplementations, contains(TestExtensionPointImpl.class));
 
     }
 

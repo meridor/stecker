@@ -11,8 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class DefaultDependencyCheckerTest {
@@ -64,9 +67,8 @@ public class DefaultDependencyCheckerTest {
             assertTrue(e.getPluginMetadata().isPresent());
             missingDependencies.addAll(e.getDependencyProblem().get().getMissingDependencies());
         }
-        assertEquals(2, missingDependencies.size());
-        assertTrue(missingDependencies.contains(MISSING_DEPENDENCY));
-        assertTrue(missingDependencies.contains(DEPENDENCY_WITH_FIXED_VERSION));
+        assertThat(missingDependencies, hasSize(2));
+        assertThat(missingDependencies, contains(MISSING_DEPENDENCY, DEPENDENCY_WITH_FIXED_VERSION));
     }
 
     @Test
@@ -85,8 +87,8 @@ public class DefaultDependencyCheckerTest {
             assertTrue(e.getDependencyProblem().isPresent());
             conflictingDependencies.addAll(e.getDependencyProblem().get().getConflictingDependencies());
         }
-        assertEquals(1, conflictingDependencies.size());
-        assertTrue(conflictingDependencies.contains(DEPENDENCY_WITH_VERSION_RANGE));
+        assertThat(conflictingDependencies, hasSize(1));
+        assertThat(conflictingDependencies, contains(DEPENDENCY_WITH_VERSION_RANGE));
     }
 
 }

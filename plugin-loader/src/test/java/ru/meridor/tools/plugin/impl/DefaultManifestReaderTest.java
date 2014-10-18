@@ -1,7 +1,10 @@
 package ru.meridor.tools.plugin.impl;
 
 import org.junit.Test;
-import ru.meridor.tools.plugin.*;
+import ru.meridor.tools.plugin.Dependency;
+import ru.meridor.tools.plugin.JarHelper;
+import ru.meridor.tools.plugin.PluginException;
+import ru.meridor.tools.plugin.PluginMetadata;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,7 +16,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.jar.Manifest;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public class DefaultManifestReaderTest extends DefaultManifestReader {
 
@@ -50,30 +55,28 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
     public void testRead() throws PluginException {
         final Path FILE = Paths.get("missing-file");
         PluginMetadata pluginMetadata = read(FILE);
-        assertEquals(NAME, pluginMetadata.getName());
-        assertEquals(VERSION, pluginMetadata.getVersion());
-        assertEquals(Optional.of(ZonedDateTime.parse(DATE)), pluginMetadata.getDate());
-        assertEquals(Optional.of(DESCRIPTION), pluginMetadata.getDescription());
-        assertEquals(Optional.of(MAINTAINER), pluginMetadata.getMaintainer());
-        assertEquals(new DependencyContainer(NAME, VERSION), pluginMetadata.getDependency());
-        assertEquals(FILE, pluginMetadata.getPath());
+        assertThat(pluginMetadata.getName(), equalTo(NAME));
+        assertThat(pluginMetadata.getVersion(), equalTo(VERSION));
+        assertThat(pluginMetadata.getDate(), equalTo(Optional.of(ZonedDateTime.parse(DATE))));
+        assertThat(pluginMetadata.getDescription(), equalTo(Optional.of(DESCRIPTION)));
+        assertThat(pluginMetadata.getMaintainer(), equalTo(Optional.of(MAINTAINER)));
+        assertThat(pluginMetadata.getDependency(), equalTo(new DependencyContainer(NAME, VERSION)));
+        assertThat(pluginMetadata.getPath(), equalTo(FILE));
 
         List<Dependency> requiredDependencies = pluginMetadata.getRequiredDependencies();
-        assertEquals(2, requiredDependencies.size());
+        assertThat(requiredDependencies, hasSize(2));
         Dependency requiredDependency1 = new DependencyContainer("some-plugin");
-        assertEquals(requiredDependency1, requiredDependencies.get(0));
         Dependency requiredDependency2 = new DependencyContainer("another-plugin", "[0.9,)");
-        assertEquals(requiredDependency2, requiredDependencies.get(1));
+        assertThat(requiredDependencies, contains(requiredDependency1, requiredDependency2));
 
         List<Dependency> conflictingDependencies = pluginMetadata.getConflictingDependencies();
-        assertEquals(2, conflictingDependencies.size());
+        assertThat(conflictingDependencies, hasSize(2));
         Dependency conflictingDependency1 = new DependencyContainer("some-conflicting-plugin", "(,1.0]");
-        assertEquals(conflictingDependency1, conflictingDependencies.get(0));
         Dependency conflictingDependency2 = new DependencyContainer("another-conflicting-plugin", "[1.1,1.2]");
-        assertEquals(conflictingDependency2, conflictingDependencies.get(1));
+        assertThat(conflictingDependencies, contains(conflictingDependency1, conflictingDependency2));
 
         Dependency provided = new DependencyContainer(PROVIDES);
-        assertEquals(Optional.of(provided), pluginMetadata.getProvidedDependency());
+        assertThat(pluginMetadata.getProvidedDependency(), equalTo(Optional.of(provided)));
     }
 
     @Test
@@ -83,7 +86,7 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
                 put(ManifestField.NAME.getFieldName(), NAME);
             }
         });
-        assertEquals(Optional.of(NAME), getField(manifest, ManifestField.NAME));
+        assertThat(getField(manifest, ManifestField.NAME), equalTo(Optional.of(NAME)));
         assertFalse(getField(manifest, ManifestField.VERSION).isPresent()); //Missing field
     }
 
@@ -96,14 +99,16 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
     public void testGetDependenciesList() throws ManifestException {
         Manifest manifest = JarHelper.createManifest(manifestContents);
         List<Dependency> list = getDependenciesList(manifest, ManifestField.DEPENDS);
-        assertEquals(2, list.size());
-        assertEquals(new DependencyContainer("some-plugin"), list.get(0));
-        assertEquals(new DependencyContainer("another-plugin", "[0.9,)"), list.get(1));
+        assertThat(list, hasSize(2));
+        assertThat(list, contains(
+                new DependencyContainer("some-plugin"),
+                new DependencyContainer("another-plugin", "[0.9,)")
+        ));
     }
 
     @Test
     public void testGetEmptyDependenciesList() throws ManifestException {
-        assertTrue(getDependenciesList(new Manifest(), ManifestField.DEPENDS).isEmpty());
+        assertThat(getDependenciesList(new Manifest(), ManifestField.DEPENDS), empty());
     }
 
     @Test(expected = ManifestException.class)
