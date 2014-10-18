@@ -1,11 +1,11 @@
 [![Build Status](https://travis-ci.org/meridor/plugin-engine.svg?branch=master)](https://travis-ci.org/meridor/plugin-engine)
-# Plugin Engine
+# Stecker
 
-Large applications very often provide plugin functionality. This library is a simple implementation of such plugin functionality that can be easily integrated to your project.
+Large applications very often provide plugin functionality. **Stecker** (which stands for "electrical plug" in Deutch) is a lightweight implementation of such plugin functionality that can be easily integrated to your project.
 
 ## Table of Contents
 * [Getting Started](#getting-started)
-  * [Example Project](https://github.com/meridor/plugin-engine-example)
+  * [Example Project](https://github.com/meridor/stecker-example)
   * [Basic Usage](#basic-usage)
   * [Exceptions](#exceptions)
 * [Creating Plugins](#creating-plugins)
@@ -19,11 +19,11 @@ Large applications very often provide plugin functionality. This library is a si
 ## Getting Started
 ### Basic Usage
 * Place plugins to a directory (e.g. `some/directory`)
-* Add plugin-loader to your Maven **pom.xml**:
+* Add plugin loader to your Maven **pom.xml**:
 ```xml
 <dependency>
-    <groupId>ru.meridor.tools</groupId>
-    <artifactId>plugin-loader</artifactId>
+    <groupId>ru.meridor.stecker</groupId>
+    <artifactId>stecker-plugin-loader</artifactId>
     <version>${latest-version}</version>
 </dependency>
 ```
@@ -64,8 +64,8 @@ To easily create a plugin you need to use Maven plugin called **plugin-generator
 <build>
     <plugins>
         <plugin>
-            <groupId>ru.meridor.tools</groupId>
-            <artifactId>plugin-generator</artifactId>
+            <groupId>ru.meridor.stecker</groupId>
+            <artifactId>stecker-plugin-generator</artifactId>
             <version>${latest-plugin-version}</version>
             <executions>
                 <execution>

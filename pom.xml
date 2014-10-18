@@ -3,12 +3,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.meridor.tools</groupId>
-    <artifactId>plugin-engine</artifactId>
+    <groupId>ru.meridor.stecker</groupId>
+    <artifactId>stecker</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Meridor Plugin Engine</name>
+    <name>Stecker</name>
+    <description>Stecker is a lightweight plugin engine similar to OSGi but with no contracts and restrictions.</description>
 
     <properties>
         <compiler.version>1.8</compiler.version>
@@ -16,8 +17,8 @@
     </properties>
 
     <modules>
-        <module>plugin-loader</module>
-        <module>plugin-generator</module>
+        <module>stecker-plugin-loader</module>
+        <module>stecker-plugin-generator</module>
     </modules>
 
     <dependencyManagement>
