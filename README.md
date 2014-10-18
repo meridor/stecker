@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/meridor/plugin-engine.svg?branch=master)](https://travis-ci.org/meridor/plugin-engine)
+[![Build Status](https://travis-ci.org/meridor/stecker.svg?branch=master)](https://travis-ci.org/meridor/stecker)
 # Stecker
 
 Large applications very often provide plugin functionality. **Stecker** (which stands for "electrical plug" in Deutch) is a lightweight implementation of such plugin functionality that can be easily integrated to your project.
