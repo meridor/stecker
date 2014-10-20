@@ -3,7 +3,8 @@ package ru.meridor.stecker;
 import org.junit.Test;
 import ru.meridor.stecker.impl.FileSystemHelper;
 import ru.meridor.stecker.impl.ManifestField;
-import ru.meridor.stecker.impl.data.PluginImpl;
+import ru.meridor.stecker.impl.data.AnnotatedImpl;
+import ru.meridor.stecker.impl.data.TestAnnotation;
 import ru.meridor.stecker.impl.data.TestExtensionPoint;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
 
@@ -79,7 +80,7 @@ public class PluginLoaderTest {
 
             PluginRegistry pluginRegistry = PluginLoader
                     .withPluginDirectory(tempDirectory)
-                    .withExtensionPoints(TestExtensionPoint.class)
+                    .withExtensionPoints(TestExtensionPoint.class, TestAnnotation.class)
                     .load();
 
             assertThat(pluginRegistry.getPluginNames(), hasSize(1));
@@ -88,10 +89,10 @@ public class PluginLoaderTest {
             assertThat(pluginRegistry.getPlugin(PLUGIN_NAME).get().getVersion(), equalTo(PLUGIN_VERSION));
 
             assertThat(pluginRegistry.getExtensionPoints(), hasSize(2));
-            assertThat(pluginRegistry.getExtensionPoints(), containsInAnyOrder(TestExtensionPoint.class, Plugin.class));
+            assertThat(pluginRegistry.getExtensionPoints(), containsInAnyOrder(TestExtensionPoint.class, TestAnnotation.class));
 
-            assertThat(pluginRegistry.getImplementations(Plugin.class), hasSize(1));
-            assertThat(pluginRegistry.getImplementations(Plugin.class), contains(PluginImpl.class));
+            assertThat(pluginRegistry.getImplementations(TestAnnotation.class), hasSize(1));
+            assertThat(pluginRegistry.getImplementations(TestAnnotation.class), contains(AnnotatedImpl.class));
 
             assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), hasSize(1));
             assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), contains(TestExtensionPointImpl.class));

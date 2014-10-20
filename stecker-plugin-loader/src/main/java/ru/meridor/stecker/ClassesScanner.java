@@ -14,7 +14,7 @@ public interface ClassesScanner {
      * an interface <b>A</b> and some plugin implements it in classes B and C then the mapping will be: A -> (B, C).
      *
      * @param pluginFile      plugin file to process
-     * @param extensionPoints a list extension point classes
+     * @param extensionPoints a list of extension point classes
      * @return mapping from extension point to implementations from a plugin
      * @throws PluginException
      */

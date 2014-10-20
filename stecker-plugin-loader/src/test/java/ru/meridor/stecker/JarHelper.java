@@ -1,8 +1,8 @@
 package ru.meridor.stecker;
 
 import ru.meridor.stecker.impl.DefaultClassesScanner;
+import ru.meridor.stecker.impl.data.AnnotatedImpl;
 import ru.meridor.stecker.impl.data.LibraryClass;
-import ru.meridor.stecker.impl.data.PluginImpl;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
 
 import java.io.InputStream;
@@ -100,7 +100,7 @@ public final class JarHelper {
                 directory,
                 DefaultClassesScanner.PLUGIN_CLASSES_FILE,
                 Optional.empty(),
-                new Class[]{PluginImpl.class, TestExtensionPointImpl.class},
+                new Class[]{AnnotatedImpl.class, TestExtensionPointImpl.class},
                 Collections.emptyMap()
         );
         Path libDirectory = directory.resolve(DefaultClassesScanner.LIB_DIRECTORY);
