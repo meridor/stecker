@@ -4,9 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.meridor.stecker.JarHelper;
-import ru.meridor.stecker.Plugin;
 import ru.meridor.stecker.PluginException;
-import ru.meridor.stecker.impl.data.PluginImpl;
+import ru.meridor.stecker.impl.data.AnnotatedImpl;
+import ru.meridor.stecker.impl.data.TestAnnotation;
 import ru.meridor.stecker.impl.data.TestExtensionPoint;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
 
@@ -71,19 +71,20 @@ public class DefaultClassesScannerTest {
         List<Class> extensionPoints = new ArrayList<Class>() {
             {
                 add(TestExtensionPoint.class);
+                add(TestAnnotation.class);
             }
         };
 
         Map<Class, List<Class>> classesMap = new DefaultClassesScanner(cacheDirectory).scan(pluginFile, extensionPoints);
 
         assertThat(classesMap.entrySet(), hasSize(2));
-        assertThat(classesMap, hasKey(Plugin.class));
 
-        List<Class> pluginImplementations = classesMap.get(Plugin.class);
+        assertThat(classesMap, hasKey(TestAnnotation.class));
+        List<Class> pluginImplementations = classesMap.get(TestAnnotation.class);
         assertThat(pluginImplementations, hasSize(1));
-        assertThat(pluginImplementations, contains(PluginImpl.class));
-        assertThat(classesMap, hasKey(TestExtensionPoint.class));
+        assertThat(pluginImplementations, contains(AnnotatedImpl.class));
 
+        assertThat(classesMap, hasKey(TestExtensionPoint.class));
         List<Class> testExtensionPointImplementations = classesMap.get(TestExtensionPoint.class);
         assertThat(testExtensionPointImplementations, hasSize(1));
         assertThat(testExtensionPointImplementations, contains(TestExtensionPointImpl.class));

@@ -119,7 +119,7 @@ Dependency version is following [Maven version specification rules](http://maven
 Version range is a pair of start and end versions enclosed in parentheses or square brackets or a pair of those. Required version should remain between start and end versions including them if square brackets are used and excluding them is case of parentheses. Some examples: `[1.0; 1.2]` - between 1.0 and 1.2 including them, `(,2.0)` - less than 2.0, `[2.2, 3.0)` - greater than or equals to 2.2 but less than 3.0. 
 
 ### Extension Points
-This library doesn't introduce any requirements on extension points. The only implicit extension point provided is the [Plugin](https://github.com/meridor/plugin-engine/blob/master/plugin-loader/src/main/java/ru/meridor/tools/plugin/Plugin.java) interface which allows you to determine plugin initialization and destruction logic (like [Servlet](http://docs.oracle.com/javaee/6/api/javax/servlet/Servlet.html) interface does).
+An extension point can be an ordinary class (i.e. class or interface) or an annotation. In that case plugin loader returns classes that inherit from extension point class or are annotated by extension point annotation.
 
 ## Glossary
 * **Host project** - a project supporting plugins.

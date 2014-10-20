@@ -1,12 +1,12 @@
 package ru.meridor.stecker.impl;
 
 import ru.meridor.stecker.ClassesScanner;
-import ru.meridor.stecker.Plugin;
 import ru.meridor.stecker.PluginException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -37,7 +37,6 @@ public class DefaultClassesScanner implements ClassesScanner {
     @Override
     public Map<Class, List<Class>> scan(Path pluginFile, List<Class> extensionPoints) throws PluginException {
         try {
-            extensionPoints.add(Plugin.class); //Plugin base class is always an extension point
             Path unpackedPluginDirectory = unpackPlugin(pluginFile, cacheDirectory);
             Path pluginJarFile = getPluginJarPath(unpackedPluginDirectory);
             ClassLoader classLoader = getClassLoader(unpackedPluginDirectory);
@@ -145,7 +144,7 @@ public class DefaultClassesScanner implements ClassesScanner {
                 }
                 Class<?> currentClass = Class.forName(className, true, classLoader);
                 for (Class<?> extensionPoint : extensionPoints) {
-                    if (extensionPoint.isAssignableFrom(currentClass)) {
+                    if (isSubclassOf(currentClass, extensionPoint) || isAnnotatedWith(currentClass, extensionPoint)) {
                         if (!matchingClasses.containsKey(extensionPoint)) {
                             matchingClasses.put(extensionPoint, new ArrayList<>());
                         }
@@ -157,4 +156,14 @@ public class DefaultClassesScanner implements ClassesScanner {
         return matchingClasses;
     }
 
+    private boolean isAnnotatedWith(Class<?> currentClass, Class<?> extensionPoint) {
+        return
+                extensionPoint.isAnnotation() &&
+                        currentClass.isAnnotationPresent(extensionPoint.asSubclass(Annotation.class));
+    }
+
+
+    private boolean isSubclassOf(Class<?> currentClass, Class<?> extensionPoint) {
+        return extensionPoint.isAssignableFrom(currentClass);
+    }
 }
