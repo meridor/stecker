@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mojo(
-        name="create",
+        name = "create",
         defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresProject = true,
@@ -108,7 +108,7 @@ public class CreateMojo extends AbstractMojo {
         Path libDirectory = outputPath.resolve(DefaultClassesScanner.LIB_DIRECTORY);
         getLog().debug(String.format("Creating directory to store dependencies: %s", libDirectory.toString()));
         Files.createDirectories(libDirectory);
-        for (Artifact artifact: artifacts) {
+        for (Artifact artifact : artifacts) {
             Path artifactSourcePath = Paths.get(artifact.getFile().toURI());
             Path artifactDestinationPath = libDirectory.resolve(artifactSourcePath.getFileName());
             getLog().debug(String.format("Copying %s to %s", artifactSourcePath.toString(), libDirectory.toString()));
@@ -143,19 +143,19 @@ public class CreateMojo extends AbstractMojo {
         addAttribute(manifest, ManifestField.NAME.getFieldName(), pluginName);
         addAttribute(manifest, ManifestField.VERSION.getFieldName(), pluginVersion);
         addAttribute(manifest, ManifestField.DATE.getFieldName(), ZonedDateTime.now().format(DefaultManifestReader.DATE_FORMATTER));
-        if (description != null){
+        if (description != null) {
             addAttribute(manifest, ManifestField.DESCRIPTION.getFieldName(), description);
         }
-        if (maintainer != null){
+        if (maintainer != null) {
             addAttribute(manifest, ManifestField.MAINTAINER.getFieldName(), maintainer);
         }
-        if (depends != null){
+        if (depends != null) {
             addAttribute(manifest, ManifestField.DEPENDS.getFieldName(), joinDependencies(depends));
         }
-        if (conflicts != null){
+        if (conflicts != null) {
             addAttribute(manifest, ManifestField.CONFLICTS.getFieldName(), joinDependencies(conflicts));
         }
-        if (provides != null){
+        if (provides != null) {
             addAttribute(manifest, ManifestField.PROVIDES.getFieldName(), provides);
         }
         return manifest;
@@ -165,9 +165,9 @@ public class CreateMojo extends AbstractMojo {
         return dependencies
                 .stream()
                 .map(pl ->
-                        (pl.getVersion() != null) ?
-                        pl.getName() + DefaultManifestReader.VERSION_DELIMITER + pl.getVersion() :
-                        pl.getName()
+                                (pl.getVersion() != null) ?
+                                        pl.getName() + DefaultManifestReader.VERSION_DELIMITER + pl.getVersion() :
+                                        pl.getName()
                 )
                 .collect(Collectors.joining(DefaultManifestReader.DEPENDENCY_DELIMITER));
     }

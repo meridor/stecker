@@ -1,4 +1,6 @@
-package ru.meridor.stecker;
+package ru.meridor.stecker.interfaces;
+
+import ru.meridor.stecker.PluginException;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -16,7 +18,7 @@ public interface ClassesScanner {
      * @param pluginFile      plugin file to process
      * @param extensionPoints a list of extension point classes
      * @return mapping from extension point to implementations from a plugin
-     * @throws PluginException
+     * @throws ru.meridor.stecker.PluginException
      */
     Map<Class, List<Class>> scan(Path pluginFile, List<Class> extensionPoints) throws PluginException;
 

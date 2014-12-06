@@ -1,4 +1,4 @@
-package ru.meridor.stecker;
+package ru.meridor.stecker.interfaces;
 
 import java.util.Optional;
 

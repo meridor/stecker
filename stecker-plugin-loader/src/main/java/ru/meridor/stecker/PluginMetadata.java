@@ -1,5 +1,7 @@
 package ru.meridor.stecker;
 
+import ru.meridor.stecker.interfaces.Dependency;
+
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -32,7 +34,7 @@ public interface PluginMetadata {
     Path getPath();
 
     /**
-     * Returns {@link Dependency} object corresponding to this plugin
+     * Returns {@link ru.meridor.stecker.interfaces.Dependency} object corresponding to this plugin
      *
      * @return dependency object
      */

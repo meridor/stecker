@@ -7,6 +7,7 @@ import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +28,8 @@ public final class JarHelper {
     private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
 
     private static final String DEPENDENCY_JAR_NAME = "dependency.jar";
+
+    public static final String TEST_RESOURCE_NAME = "test.resource";
 
     private JarHelper() {
     }
@@ -84,6 +87,7 @@ public final class JarHelper {
                         put(DefaultClassesScanner.PLUGIN_CLASSES_FILE, pluginJar);
                         put(Paths.get(DefaultClassesScanner.LIB_DIRECTORY, DEPENDENCY_JAR_NAME).toString(), dependencyFile);
                         put("uselessDirectory/", directory); //Just to test how directories are processed
+                        put(TEST_RESOURCE_NAME, getTestResourcePath());
                     }
                 }
         );
@@ -93,6 +97,14 @@ public final class JarHelper {
         Files.delete(libDirectory);
 
         return testPlugin;
+    }
+
+    private static Path getTestResourcePath() throws Exception {
+        URL testResourceURL = JarHelper.class.getClassLoader().getResource(TEST_RESOURCE_NAME);
+        if (testResourceURL == null) {
+            throw new Exception("Test resource not found");
+        }
+        return Paths.get(testResourceURL.toURI());
     }
 
     public static Path[] createUnpackedTestPluginFile(Path directory) throws Exception {

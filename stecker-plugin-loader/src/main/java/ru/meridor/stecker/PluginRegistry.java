@@ -1,12 +1,16 @@
 package ru.meridor.stecker;
 
+import ru.meridor.stecker.interfaces.ImplementationsAware;
+import ru.meridor.stecker.interfaces.PluginsAware;
+import ru.meridor.stecker.interfaces.ResourcesAware;
+
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Stores all information about loaded plugins
  */
-public interface PluginRegistry {
+public interface PluginRegistry extends PluginsAware, ImplementationsAware, ResourcesAware {
 
     /**
      * Add extension point implementations to registry
@@ -25,33 +29,11 @@ public interface PluginRegistry {
     void addPlugin(PluginMetadata pluginMetadata) throws PluginException;
 
     /**
-     * Returns information about plugin by its plugin name
+     * Add resources for specific plugin
      *
-     * @param pluginName plugin name to process
-     * @return information about plugin or empty if not present
+     * @param pluginName plugin name
+     * @param resources  plugin resources
      */
-    Optional<PluginMetadata> getPlugin(String pluginName);
-
-    /**
-     * Returns a list of dependencies in the registry
-     *
-     * @return a list of dependencies
-     */
-    List<String> getPluginNames();
-
-    /**
-     * Returns a list of valid extension points
-     *
-     * @return a list of extension points
-     */
-    List<Class> getExtensionPoints();
-
-    /**
-     * Returns classes implementing extension point
-     *
-     * @param extensionPoint extension point class
-     * @return a list of implementation classes
-     */
-    List<Class> getImplementations(Class extensionPoint);
+    void addResources(String pluginName, List<Path> resources);
 
 }

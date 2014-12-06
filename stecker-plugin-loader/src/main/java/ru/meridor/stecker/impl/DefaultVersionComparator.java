@@ -1,7 +1,7 @@
 package ru.meridor.stecker.impl;
 
-import ru.meridor.stecker.VersionComparator;
 import ru.meridor.stecker.VersionRelation;
+import ru.meridor.stecker.interfaces.VersionComparator;
 
 import java.util.Optional;
 

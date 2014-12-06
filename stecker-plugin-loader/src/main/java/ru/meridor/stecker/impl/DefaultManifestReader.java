@@ -1,9 +1,9 @@
 package ru.meridor.stecker.impl;
 
-import ru.meridor.stecker.Dependency;
-import ru.meridor.stecker.ManifestReader;
 import ru.meridor.stecker.PluginException;
 import ru.meridor.stecker.PluginMetadata;
+import ru.meridor.stecker.interfaces.Dependency;
+import ru.meridor.stecker.interfaces.ManifestReader;
 
 import java.io.IOException;
 import java.nio.file.Files;

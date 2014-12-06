@@ -1,6 +1,12 @@
 package ru.meridor.stecker.impl;
 
-import ru.meridor.stecker.*;
+import ru.meridor.stecker.PluginException;
+import ru.meridor.stecker.PluginMetadata;
+import ru.meridor.stecker.VersionRelation;
+import ru.meridor.stecker.interfaces.Dependency;
+import ru.meridor.stecker.interfaces.DependencyChecker;
+import ru.meridor.stecker.interfaces.PluginsAware;
+import ru.meridor.stecker.interfaces.VersionComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +15,7 @@ import java.util.Optional;
 public class DefaultDependencyChecker implements DependencyChecker {
 
     @Override
-    public void check(PluginRegistry pluginRegistry, PluginMetadata pluginMetadata) throws PluginException {
+    public void check(PluginsAware pluginRegistry, PluginMetadata pluginMetadata) throws PluginException {
 
         List<Dependency> missingRequiredDependencies = new ArrayList<>();
         requiredDependencies:

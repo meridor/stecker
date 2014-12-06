@@ -1,4 +1,6 @@
-package ru.meridor.stecker;
+package ru.meridor.stecker.interfaces;
+
+import ru.meridor.stecker.VersionRelation;
 
 import java.util.Optional;
 
@@ -9,7 +11,7 @@ public interface VersionComparator {
 
     /**
      * Returns how actual version is related to required, e.g. whether it's less or greater than required or in required
-     * version range. See {@link VersionRelation} values for details.
+     * version range. See {@link ru.meridor.stecker.VersionRelation} values for details.
      *
      * @param required required version or version range or nothing
      * @param actual   actual version or nothing

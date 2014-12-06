@@ -1,10 +1,10 @@
 package ru.meridor.stecker.impl;
 
 import org.junit.Test;
-import ru.meridor.stecker.Dependency;
 import ru.meridor.stecker.JarHelper;
 import ru.meridor.stecker.PluginException;
 import ru.meridor.stecker.PluginMetadata;
+import ru.meridor.stecker.interfaces.Dependency;
 
 import java.io.IOException;
 import java.nio.file.Path;

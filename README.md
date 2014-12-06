@@ -33,6 +33,7 @@ Path aDirectoryWithPlugins = Paths.get("some/directory");
 PluginRegistry pluginRegistry = PluginLoader
         .withPluginDirectory(aDirectoryWithPlugins)
         .withExtensionPoints(ExtensionPoint1.class, ExtensionPoint2.class, ExtensionPoint3.class)
+        .withResourcesPatterns("glob:**/*.xml")
         .load();
 ```
 This code will:
@@ -40,6 +41,7 @@ This code will:
 * For each of matching files read their manifest and get plugin metadata
 * Check plugin dependencies
 * Unpack plugins to cache directory (default is **.cache** inside plugin directory) and scan it for extension points implementations
+* Scan unpacked directory for resources matching specified pattern (\*.xml in the example above)
 * Save all gathered information to container and return it
 
 ### Exceptions

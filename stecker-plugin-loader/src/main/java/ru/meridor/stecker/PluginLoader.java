@@ -1,9 +1,10 @@
 package ru.meridor.stecker;
 
-import ru.meridor.stecker.impl.DefaultClassesScanner;
-import ru.meridor.stecker.impl.DefaultDependencyChecker;
-import ru.meridor.stecker.impl.DefaultManifestReader;
-import ru.meridor.stecker.impl.PluginRegistryContainer;
+import ru.meridor.stecker.impl.*;
+import ru.meridor.stecker.interfaces.ClassesScanner;
+import ru.meridor.stecker.interfaces.DependencyChecker;
+import ru.meridor.stecker.interfaces.ManifestReader;
+import ru.meridor.stecker.interfaces.ResourcesScanner;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -34,6 +35,10 @@ public class PluginLoader {
     private DependencyChecker dependencyChecker;
 
     private ClassesScanner classesScanner;
+
+    private ResourcesScanner resourcesScanner;
+
+    private String[] resourcesPatterns = new String[0];
 
     private PluginLoader(Path pluginDirectory) {
         this.pluginDirectory = pluginDirectory;
@@ -124,6 +129,29 @@ public class PluginLoader {
     }
 
     /**
+     * Specify custom {@link ResourcesScanner} implementation
+     *
+     * @param resourcesScanner custom {@link ResourcesScanner} implementation
+     * @return this
+     */
+    public PluginLoader withResourcesScanner(ResourcesScanner resourcesScanner) {
+        this.resourcesScanner = resourcesScanner;
+        return this;
+    }
+
+    /**
+     * Specify resources patterns to match against
+     *
+     * @param resourcesPatterns a list of allowed resources patterns in {@link java.nio.file.PathMatcher} format
+     * @return this
+     * @see java.nio.file.FileSystem#getPathMatcher
+     */
+    public PluginLoader withResourcesPatterns(String... resourcesPatterns) {
+        this.resourcesPatterns = resourcesPatterns;
+        return this;
+    }
+
+    /**
      * Returns the directory where we search for plugins
      *
      * @return plugin directory
@@ -182,6 +210,25 @@ public class PluginLoader {
     }
 
     /**
+     * Returns current {@link ResourcesScanner} instance
+     *
+     * @return current resources scanner instance
+     */
+    public ResourcesScanner getResourcesScanner() {
+        return (resourcesScanner != null) ?
+                resourcesScanner : new DefaultResourcesScanner(getCacheDirectory(), getResourcesPatterns());
+    }
+
+    /**
+     * Returns a list of allowed resources globs
+     *
+     * @return a list of resources globs
+     */
+    public String[] getResourcesPatterns() {
+        return resourcesPatterns;
+    }
+
+    /**
      * Returns a list extension points classes
      *
      * @return extension points list
@@ -220,6 +267,9 @@ public class PluginLoader {
                 for (Class extensionPoint : mapping.keySet()) {
                     pluginRegistry.addImplementations(extensionPoint, mapping.get(extensionPoint));
                 }
+
+                List<Path> resources = getResourcesScanner().scan(pluginMetadata.get().getPath());
+                pluginRegistry.addResources(pluginMetadata.get().getName(), resources);
             }
         }
         return pluginRegistry;

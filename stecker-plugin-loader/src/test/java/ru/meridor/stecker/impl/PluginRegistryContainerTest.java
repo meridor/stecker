@@ -1,12 +1,12 @@
 package ru.meridor.stecker.impl;
 
 import org.junit.Test;
-import ru.meridor.stecker.Dependency;
 import ru.meridor.stecker.PluginException;
 import ru.meridor.stecker.PluginMetadata;
 import ru.meridor.stecker.PluginRegistry;
 import ru.meridor.stecker.impl.data.TestExtensionPoint;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
+import ru.meridor.stecker.interfaces.Dependency;
 
 import java.util.ArrayList;
 import java.util.Optional;

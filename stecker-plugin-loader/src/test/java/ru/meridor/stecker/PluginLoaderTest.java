@@ -7,6 +7,10 @@ import ru.meridor.stecker.impl.data.AnnotatedImpl;
 import ru.meridor.stecker.impl.data.TestAnnotation;
 import ru.meridor.stecker.impl.data.TestExtensionPoint;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
+import ru.meridor.stecker.interfaces.ClassesScanner;
+import ru.meridor.stecker.interfaces.DependencyChecker;
+import ru.meridor.stecker.interfaces.ManifestReader;
+import ru.meridor.stecker.interfaces.ResourcesScanner;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +34,10 @@ public class PluginLoaderTest {
         ManifestReader manifestReader = mock(ManifestReader.class);
         DependencyChecker dependencyChecker = mock(DependencyChecker.class);
         ClassesScanner classesScanner = mock(ClassesScanner.class);
+        ResourcesScanner resourcesScanner = mock(ResourcesScanner.class);
+        String[] resourcesGlobs = new String[]{"glob1", "glob2"};
+
+
         PluginLoader pluginLoader = PluginLoader
                 .withPluginDirectory(pluginDirectory)
                 .withFileGlob(fileGlob)
@@ -37,7 +45,9 @@ public class PluginLoaderTest {
                 .withExtensionPoints(extensionPointsArray)
                 .withManifestReader(manifestReader)
                 .withDependencyChecker(dependencyChecker)
-                .withClassesScanner(classesScanner);
+                .withClassesScanner(classesScanner)
+                .withResourcesScanner(resourcesScanner)
+                .withResourcesPatterns(resourcesGlobs);
 
         assertThat(pluginLoader.getPluginDirectory(), equalTo(pluginDirectory));
         List<Class> uniqueExtensionPoints = Arrays.asList(extensionPointsArray)
@@ -49,6 +59,8 @@ public class PluginLoaderTest {
         assertThat(pluginLoader.getManifestReader(), equalTo(manifestReader));
         assertThat(pluginLoader.getDependencyChecker(), equalTo(dependencyChecker));
         assertThat(pluginLoader.getClassesScanner(), equalTo(classesScanner));
+        assertThat(pluginLoader.getResourcesScanner(), equalTo(resourcesScanner));
+        assertThat(pluginLoader.getResourcesPatterns(), equalTo(resourcesGlobs));
     }
 
     @Test(expected = PluginException.class)
@@ -60,18 +72,13 @@ public class PluginLoaderTest {
     public void testLoad() throws Exception {
         final String PLUGIN_NAME = "plugin-name";
         final String PLUGIN_VERSION = "plugin-version";
-        Map<String, String> manifestContents = new HashMap<String, String>() {
-            {
-                put(ManifestField.NAME.getFieldName(), PLUGIN_NAME);
-                put(ManifestField.VERSION.getFieldName(), PLUGIN_VERSION);
-            }
-        };
-        Manifest manifest = JarHelper.createManifest(manifestContents);
-        //Can't use in-memory filesystems (e.g. Google JimFS) here because they don't support java.net.URL for class loader
-        Path tempDirectory = FileSystemHelper.createTempDirectory();
+        Manifest manifest = createTestLoadManifest(PLUGIN_NAME, PLUGIN_VERSION);
+        Path tempDirectory = FileSystemHelper.createTempDirectory(); //Can't use in-memory filesystems (e.g. Google JimFS) here because they don't support java.net.URL for class loader
+
         try {
             assertNotNull(tempDirectory);
             assertTrue(Files.exists(tempDirectory));
+
             JarHelper.createTestPluginFile(
                     "some-plugin",
                     tempDirectory,
@@ -81,6 +88,7 @@ public class PluginLoaderTest {
             PluginRegistry pluginRegistry = PluginLoader
                     .withPluginDirectory(tempDirectory)
                     .withExtensionPoints(TestExtensionPoint.class, TestAnnotation.class)
+                    .withResourcesPatterns("glob:**/*.resource")
                     .load();
 
             assertThat(pluginRegistry.getPluginNames(), hasSize(1));
@@ -96,8 +104,23 @@ public class PluginLoaderTest {
 
             assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), hasSize(1));
             assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), contains(TestExtensionPointImpl.class));
+
+            assertThat(pluginRegistry.getResources(), hasSize(1));
+            assertThat(pluginRegistry.getResources("missing-plugin"), hasSize(0));
+            assertThat(pluginRegistry.getResources(PLUGIN_NAME), hasSize(1));
+            assertTrue(pluginRegistry.getResources(PLUGIN_NAME).get(0).endsWith(JarHelper.TEST_RESOURCE_NAME));
         } finally {
             FileSystemHelper.removeDirectory(tempDirectory);
         }
+    }
+
+    private Manifest createTestLoadManifest(String pluginName, String pluginVersion) {
+        Map<String, String> manifestContents = new HashMap<String, String>() {
+            {
+                put(ManifestField.NAME.getFieldName(), pluginName);
+                put(ManifestField.VERSION.getFieldName(), pluginVersion);
+            }
+        };
+        return JarHelper.createManifest(manifestContents);
     }
 }
