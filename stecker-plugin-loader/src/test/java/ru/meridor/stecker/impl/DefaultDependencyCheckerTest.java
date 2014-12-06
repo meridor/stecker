@@ -1,10 +1,10 @@
 package ru.meridor.stecker.impl;
 
 import org.junit.Test;
-import ru.meridor.stecker.Dependency;
 import ru.meridor.stecker.PluginException;
 import ru.meridor.stecker.PluginMetadata;
-import ru.meridor.stecker.PluginRegistry;
+import ru.meridor.stecker.interfaces.Dependency;
+import ru.meridor.stecker.interfaces.PluginsAware;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class DefaultDependencyCheckerTest {
 
     @Test
     public void testRequiredDependencyMissing() {
-        PluginRegistry pluginRegistry = mock(PluginRegistry.class);
+        PluginsAware pluginRegistry = mock(PluginsAware.class);
         doReturn(Optional.empty()).when(pluginRegistry).getPlugin(eq(MISSING_NAME));
         doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME))
                 .when(pluginRegistry).getPlugin(eq(FIXED_VERSION_NAME));
@@ -73,7 +73,7 @@ public class DefaultDependencyCheckerTest {
 
     @Test
     public void testConflictingDependencyPresent() {
-        PluginRegistry pluginRegistry = mock(PluginRegistry.class);
+        PluginsAware pluginRegistry = mock(PluginsAware.class);
         doReturn(getPluginIdentityMetadata(FIXED_VERSION_NAME))
                 .when(pluginRegistry).getPlugin(eq(FIXED_VERSION_NAME));
         doReturn(getPluginIdentityMetadata(VERSION_RANGE_NAME))

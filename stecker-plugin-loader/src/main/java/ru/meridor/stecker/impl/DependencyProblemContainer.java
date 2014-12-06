@@ -1,7 +1,7 @@
 package ru.meridor.stecker.impl;
 
-import ru.meridor.stecker.Dependency;
-import ru.meridor.stecker.DependencyProblem;
+import ru.meridor.stecker.interfaces.Dependency;
+import ru.meridor.stecker.interfaces.DependencyProblem;
 
 import java.util.List;
 

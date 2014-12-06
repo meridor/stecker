@@ -3,7 +3,7 @@ package ru.meridor.stecker.impl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import ru.meridor.stecker.Dependency;
+import ru.meridor.stecker.interfaces.Dependency;
 
 import java.util.Arrays;
 import java.util.Collection;

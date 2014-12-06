@@ -1,7 +1,7 @@
 package ru.meridor.stecker.impl;
 
-import ru.meridor.stecker.Dependency;
 import ru.meridor.stecker.PluginMetadata;
+import ru.meridor.stecker.interfaces.Dependency;
 
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
