@@ -9,7 +9,8 @@
     <packaging>pom</packaging>
 
     <name>Stecker</name>
-    <description>Stecker is a lightweight plugin engine similar to OSGi but with no contracts and restrictions.</description>
+    <description>Stecker is a lightweight plugin engine similar to OSGi but with no contracts and restrictions.
+    </description>
 
     <properties>
         <compiler.version>1.8</compiler.version>

@@ -12,6 +12,7 @@ import ru.meridor.stecker.interfaces.DependencyChecker;
 import ru.meridor.stecker.interfaces.ManifestReader;
 import ru.meridor.stecker.interfaces.ResourcesScanner;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -108,7 +109,12 @@ public class PluginLoaderTest {
             assertThat(pluginRegistry.getResources(), hasSize(1));
             assertThat(pluginRegistry.getResources("missing-plugin"), hasSize(0));
             assertThat(pluginRegistry.getResources(PLUGIN_NAME), hasSize(1));
-            assertTrue(pluginRegistry.getResources(PLUGIN_NAME).get(0).endsWith(JarHelper.TEST_RESOURCE_NAME));
+            Path resourcePath = pluginRegistry.getResources(PLUGIN_NAME).get(0);
+            assertTrue(resourcePath.endsWith(JarHelper.TEST_RESOURCE_NAME));
+
+            try (InputStream inputStream = Files.newInputStream(resourcePath)) {
+                assertNotNull(inputStream); //We should be able to open resource
+            }
         } finally {
             FileSystemHelper.removeDirectory(tempDirectory);
         }

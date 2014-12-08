@@ -14,9 +14,9 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
-import ru.meridor.stecker.impl.DefaultClassesScanner;
 import ru.meridor.stecker.impl.DefaultManifestReader;
 import ru.meridor.stecker.impl.ManifestField;
+import ru.meridor.stecker.impl.PluginUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class CreateMojo extends AbstractMojo {
         getLog().debug("Copying plugin dependencies");
         Set<Artifact> artifacts = project.getArtifacts();
         Path outputPath = Paths.get(dataOutputDirectory.toURI());
-        Path libDirectory = outputPath.resolve(DefaultClassesScanner.LIB_DIRECTORY);
+        Path libDirectory = outputPath.resolve(PluginUtils.LIB_DIRECTORY);
         getLog().debug(String.format("Creating directory to store dependencies: %s", libDirectory.toString()));
         Files.createDirectories(libDirectory);
         for (Artifact artifact : artifacts) {
@@ -119,7 +119,7 @@ public class CreateMojo extends AbstractMojo {
     private void packageCompiledSources() throws DependencyResolutionRequiredException, IOException, ManifestException {
         MavenArchiver archiver = new MavenArchiver();
         archiver.setArchiver(sourcesArchiver);
-        Path pluginJarFile = getDataOutputDirectory().resolve(DefaultClassesScanner.PLUGIN_CLASSES_FILE);
+        Path pluginJarFile = getDataOutputDirectory().resolve(PluginUtils.PLUGIN_IMPLEMENTATION_FILE);
         getLog().debug(String.format("Packing plugin sources to %s", pluginJarFile.toString()));
         archiver.setOutputFile(pluginJarFile.toFile());
         sourcesArchiver.addDirectory(compiledSourcesDir);
