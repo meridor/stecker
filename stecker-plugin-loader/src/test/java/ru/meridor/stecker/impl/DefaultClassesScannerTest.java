@@ -37,11 +37,11 @@ public class DefaultClassesScannerTest {
     }
 
     private Path getPluginCachePath() {
-        return getCacheDirectory().resolve(DefaultClassesScannerTest.PLUGIN_NAME);
+        return getCacheDirectory().resolve(PLUGIN_NAME);
     }
 
     private Path getPluginFilePath() {
-        return tempDirectory.resolve(DefaultClassesScannerTest.PLUGIN_NAME + ".jar");
+        return tempDirectory.resolve(PLUGIN_NAME + ".jar");
     }
 
     @Test
@@ -56,13 +56,10 @@ public class DefaultClassesScannerTest {
     @Test
     public void testUsePluginCacheAndScan() throws Exception {
         Path cacheDirectory = getCacheDirectory();
-        Path pluginCacheDirectory = getPluginCachePath();
-        Files.createDirectories(pluginCacheDirectory);
 
-        Path pluginFile = getPluginFilePath();
-        Files.createFile(pluginFile);
+        Path pluginFile = JarHelper.createTestPluginFile(PLUGIN_NAME, tempDirectory, Optional.empty());
         Thread.sleep(1000); //We create plugin cache after plugin was created and thus cache should be used. Time precision is 1 second.
-        JarHelper.createUnpackedTestPluginFile(pluginCacheDirectory);
+        PluginUtils.unpackPlugin(pluginFile, cacheDirectory);
 
         testScan(cacheDirectory, pluginFile);
     }

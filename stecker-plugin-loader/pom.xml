@@ -12,7 +12,9 @@
     <packaging>jar</packaging>
 
     <name>Stecker Plugin Loader</name>
-    <description>This is a plugin loading library. Its main purpose is to load extension point implementations from provided plugins.</description>
+    <description>This is a plugin loading library. Its main purpose is to load extension point implementations from
+        provided plugins.
+    </description>
 
     <dependencies>
         <dependency>

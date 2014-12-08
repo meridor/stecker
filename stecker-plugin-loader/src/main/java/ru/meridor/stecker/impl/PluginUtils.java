@@ -3,6 +3,7 @@ package ru.meridor.stecker.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +15,9 @@ import java.util.jar.JarFile;
 
 public class PluginUtils {
 
+    public static final String PLUGIN_IMPLEMENTATION_FILE = "plugin.jar";
+    public static final String LIB_DIRECTORY = "lib";
+    public static final String PLUGIN_IMPLEMENTATION_UNPACK_DIRECTORY = PLUGIN_IMPLEMENTATION_FILE + ".unpacked";
     private static final String JAR_FILE_EXTENSION = ".jar";
 
     public static Path unpackPlugin(Path pluginFile, Path cacheDirectory) throws IOException {
@@ -31,8 +35,14 @@ public class PluginUtils {
         }
 
         Files.createDirectories(pluginStorageDirectory);
-
         unpackJar(pluginFile, pluginStorageDirectory);
+
+        Path pluginImplementationFilePath = pluginStorageDirectory.resolve(PLUGIN_IMPLEMENTATION_FILE);
+        Path pluginImplementationDirectory = getPluginImplementationDirectory(pluginStorageDirectory);
+
+        Files.createDirectories(pluginImplementationDirectory);
+        unpackJar(pluginImplementationFilePath, pluginImplementationDirectory);
+        Files.delete(pluginImplementationFilePath);
 
         return pluginStorageDirectory;
     }
@@ -43,7 +53,11 @@ public class PluginUtils {
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
-                Path outputPath = Paths.get(pluginStorageDirectory.toUri()).resolve(entry.getName());
+                String entryName = entry.getName();
+                if (entryName.startsWith(FileSystems.getDefault().getSeparator()) && entryName.length() > 1) {
+                    entryName = entryName.substring(1);
+                }
+                Path outputPath = Paths.get(pluginStorageDirectory.toUri()).resolve(entryName);
                 if (entry.isDirectory()) {
                     Files.createDirectories(outputPath);
                     continue;
@@ -73,4 +87,7 @@ public class PluginUtils {
         return fileLastModificationTime.compareTo(anotherFileLastModificationTime) > 0;
     }
 
+    public static Path getPluginImplementationDirectory(Path unpackedPluginDirectory) {
+        return unpackedPluginDirectory.resolve(PLUGIN_IMPLEMENTATION_UNPACK_DIRECTORY);
+    }
 }

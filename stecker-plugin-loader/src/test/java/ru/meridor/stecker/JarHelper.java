@@ -1,6 +1,6 @@
 package ru.meridor.stecker;
 
-import ru.meridor.stecker.impl.DefaultClassesScanner;
+import ru.meridor.stecker.impl.PluginUtils;
 import ru.meridor.stecker.impl.data.AnnotatedImpl;
 import ru.meridor.stecker.impl.data.LibraryClass;
 import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
@@ -84,10 +84,9 @@ public final class JarHelper {
                 new Class[0],
                 new HashMap<String, Path>() {
                     {
-                        put(DefaultClassesScanner.PLUGIN_CLASSES_FILE, pluginJar);
-                        put(Paths.get(DefaultClassesScanner.LIB_DIRECTORY, DEPENDENCY_JAR_NAME).toString(), dependencyFile);
+                        put(PluginUtils.PLUGIN_IMPLEMENTATION_FILE, pluginJar);
+                        put(Paths.get(PluginUtils.LIB_DIRECTORY, DEPENDENCY_JAR_NAME).toString(), dependencyFile);
                         put("uselessDirectory/", directory); //Just to test how directories are processed
-                        put(TEST_RESOURCE_NAME, getTestResourcePath());
                     }
                 }
         );
@@ -107,15 +106,19 @@ public final class JarHelper {
         return Paths.get(testResourceURL.toURI());
     }
 
-    public static Path[] createUnpackedTestPluginFile(Path directory) throws Exception {
+    private static Path[] createUnpackedTestPluginFile(Path directory) throws Exception {
         Path pluginJar = JarHelper.createJarFile(
                 directory,
-                DefaultClassesScanner.PLUGIN_CLASSES_FILE,
+                PluginUtils.PLUGIN_IMPLEMENTATION_FILE,
                 Optional.empty(),
                 new Class[]{AnnotatedImpl.class, TestExtensionPointImpl.class},
-                Collections.emptyMap()
+                new HashMap<String, Path>() {
+                    {
+                        put(TEST_RESOURCE_NAME, getTestResourcePath());
+                    }
+                }
         );
-        Path libDirectory = directory.resolve(DefaultClassesScanner.LIB_DIRECTORY);
+        Path libDirectory = directory.resolve(PluginUtils.LIB_DIRECTORY);
         Files.createDirectories(libDirectory);
 
         Path dependencyFile = JarHelper.createJarFile(
