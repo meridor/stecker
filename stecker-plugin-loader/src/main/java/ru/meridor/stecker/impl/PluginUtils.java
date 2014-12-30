@@ -82,9 +82,13 @@ public class PluginUtils {
     }
 
     private static boolean fileIsNewerThan(Path file, Path anotherFile) throws IOException {
-        FileTime fileLastModificationTime = Files.readAttributes(file, BasicFileAttributes.class).lastModifiedTime();
-        FileTime anotherFileLastModificationTime = Files.readAttributes(anotherFile, BasicFileAttributes.class).lastModifiedTime();
+        FileTime fileLastModificationTime = getLastModificationTime(file);
+        FileTime anotherFileLastModificationTime = getLastModificationTime(anotherFile);
         return fileLastModificationTime.compareTo(anotherFileLastModificationTime) > 0;
+    }
+    
+    public static FileTime getLastModificationTime(Path path) throws IOException {
+        return Files.readAttributes(path, BasicFileAttributes.class).lastModifiedTime();
     }
 
     public static Path getPluginImplementationDirectory(Path unpackedPluginDirectory) {
