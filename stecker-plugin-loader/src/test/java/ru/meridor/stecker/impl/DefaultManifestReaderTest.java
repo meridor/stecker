@@ -16,8 +16,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.jar.Manifest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class DefaultManifestReaderTest extends DefaultManifestReader {
@@ -86,8 +90,8 @@ public class DefaultManifestReaderTest extends DefaultManifestReader {
                 put(ManifestField.NAME.getFieldName(), NAME);
             }
         });
-        assertThat(getField(manifest, ManifestField.NAME), equalTo(Optional.of(NAME)));
-        assertFalse(getField(manifest, ManifestField.VERSION).isPresent()); //Missing field
+        assertThat(getField(manifest, ManifestField.NAME), equalTo(NAME));
+        assertNull(getField(manifest, ManifestField.VERSION)); //Missing field
     }
 
     @Test(expected = ManifestException.class)

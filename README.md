@@ -134,15 +134,19 @@ An extension point can be an ordinary class (i.e. class or interface) or an anno
 
 ## Internals
 Internally plugin engine is based on the following interfaces:
+* **PluginsProvider** - return a list of paths to be considered as plugin files or directories.
 * **ManifestReader** - reads plugin manifest and returns an object with respective field values. Overriding default implementation can be used to change field names.
 * **DependencyChecker** - uses data from manifest fields and checks that all required dependencies are present and no conflicting dependencies are present. To compare plugin versions an implementation of **VersionComparator** is used.
 * **ClassesScanner** - scans **plugin.jar** file and searches for classes implementing extension points. Any class loading logic should be implemented here.
+* **ResourcesScanner** - the same as **ClassesScanner** but for resource files.
 All enumerated interfaces have default implementations but you can easily replace them with your own:
 ```java
 File aDirectoryWithPlugins = new File("some/directory");
 PluginRegistry pluginRegistry = PluginLoader
         .withPluginDirectory(aDirectoryWithPlugins)
+        .withPluginsProvider(new MyCustomPluginsProvider())
         .withDependencyChecker(new MyCustomDependencyChecker())
         .withClassesScanner(new MyCustomClassesScanner())
+        .withResourcesScanner(new MyCustomResourcesScanner())
         .load();
 ```

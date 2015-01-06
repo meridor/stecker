@@ -25,12 +25,14 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
  */
 public class ResourcesWatcher implements Closeable {
 
+    private static final String THREAD_NAME = "Stecker Resources Watcher";
+
     private volatile List<ResourceChangedHandler> handlers = new ArrayList<>();
 
     private volatile boolean isStarted;
-    
+
     private Thread watcherThread;
-    
+
     public ResourcesWatcher(List<Path> resources) {
         this.watcherThread = getWatcherThread(resources);
     }
@@ -38,14 +40,14 @@ public class ResourcesWatcher implements Closeable {
     private Thread getWatcherThread(List<Path> resources) {
         return isMacOs() ? getScanningWatcherThread(resources) : getWatchServiceWatcherThread(resources);
     }
-    
+
     private static boolean isMacOs() {
         //WatchService doesn't work correctly on MacOS
         return System.getProperty("os.name").toLowerCase().contains("mac");
     }
-    
+
     private Thread getWatchServiceWatcherThread(List<Path> resources) {
-        return new Thread() {
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -81,7 +83,7 @@ public class ResourcesWatcher implements Closeable {
                                         handler.onResourceChanged(filePath);
                                     }
                                 });
-                        if (!key.reset()){
+                        if (!key.reset()) {
                             break;
                         }
                     }
@@ -90,11 +92,14 @@ public class ResourcesWatcher implements Closeable {
                 }
             }
         };
+        thread.setName(THREAD_NAME);
+        thread.setDaemon(true);
+        return thread;
     }
-    
+
     private Thread getScanningWatcherThread(List<Path> resources) {
         final long SCAN_DELAY = 1000;
-        return new Thread(){
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
@@ -103,13 +108,14 @@ public class ResourcesWatcher implements Closeable {
                     for (Path resource : resources) {
                         lastModifiedTimes.put(resource, PluginUtils.getLastModificationTime(resource));
                     }
-                    
+
                     while (true) {
                         try {
                             for (Path resource : resources) {
                                 FileTime previousLastModifiedTime = lastModifiedTimes.get(resource);
                                 FileTime currentLastModifiedTime = PluginUtils.getLastModificationTime(resource);
                                 if (currentLastModifiedTime.compareTo(previousLastModifiedTime) > 0) {
+                                    lastModifiedTimes.put(resource, currentLastModifiedTime);
                                     for (ResourceChangedHandler handler : handlers) {
                                         handler.onResourceChanged(resource);
                                     }
@@ -120,14 +126,17 @@ public class ResourcesWatcher implements Closeable {
                             break;
                         }
                     }
-                    
+
                 } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }
             }
         };
+        thread.setName(THREAD_NAME);
+        thread.setDaemon(true);
+        return thread;
     }
-    
+
     public void addChangedHandler(ResourceChangedHandler handler) {
         handlers.add(handler);
     }
@@ -138,9 +147,12 @@ public class ResourcesWatcher implements Closeable {
     }
 
     public void stop() {
-        watcherThread.interrupt();
+        if (isStarted) {
+            watcherThread.interrupt();
+            isStarted = false;
+        }
     }
-    
+
     public void await(Path resource) throws InterruptedException {
         if (!isStarted) {
             start();
@@ -152,8 +164,9 @@ public class ResourcesWatcher implements Closeable {
             }
         });
         countDownLatch.await();
+        stop();
     }
-    
+
     public void await() throws InterruptedException {
         await(null);
     }

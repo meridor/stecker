@@ -10,6 +10,7 @@ import ru.meridor.stecker.impl.data.TestExtensionPointImpl;
 import ru.meridor.stecker.interfaces.ClassesScanner;
 import ru.meridor.stecker.interfaces.DependencyChecker;
 import ru.meridor.stecker.interfaces.ManifestReader;
+import ru.meridor.stecker.interfaces.PluginsProvider;
 import ru.meridor.stecker.interfaces.ResourcesScanner;
 
 import java.io.InputStream;
@@ -37,11 +38,12 @@ public class PluginLoaderTest {
 
     @Rule
     public TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
-    
+
     @Test
     public void testFluentApi() throws PluginException {
         Path pluginDirectory = Paths.get("plugin-directory");
         String fileGlob = "some-glob";
+        PluginsProvider pluginsProvider = mock(PluginsProvider.class);
         Path cacheDirectory = Paths.get("cache-directory");
         Class[] extensionPointsArray = new Class[]{TestExtensionPoint.class, TestExtensionPoint.class}; //We intentionally duplicate extension points
         ManifestReader manifestReader = mock(ManifestReader.class);
@@ -54,6 +56,7 @@ public class PluginLoaderTest {
         PluginLoader pluginLoader = PluginLoader
                 .withPluginDirectory(pluginDirectory)
                 .withFileGlob(fileGlob)
+                .withPluginsProvider(pluginsProvider)
                 .withCacheDirectory(cacheDirectory)
                 .withExtensionPoints(extensionPointsArray)
                 .withManifestReader(manifestReader)
@@ -62,13 +65,14 @@ public class PluginLoaderTest {
                 .withResourcesScanner(resourcesScanner)
                 .withResourcesPatterns(resourcesGlobs);
 
-        assertThat(pluginLoader.getPluginDirectory(), equalTo(pluginDirectory));
+        assertThat(pluginLoader.getPluginsDirectory(), equalTo(pluginDirectory));
         List<Class> uniqueExtensionPoints = Arrays.asList(extensionPointsArray)
                 .stream().distinct()
                 .collect(Collectors.toList());
         assertThat(pluginLoader.getExtensionPoints(), equalTo(uniqueExtensionPoints));
         assertThat(pluginLoader.getCacheDirectory(), equalTo(cacheDirectory));
         assertThat(pluginLoader.getFileGlob(), equalTo(fileGlob));
+        assertThat(pluginLoader.getPluginsProvider(), equalTo(pluginsProvider));
         assertThat(pluginLoader.getManifestReader(), equalTo(manifestReader));
         assertThat(pluginLoader.getDependencyChecker(), equalTo(dependencyChecker));
         assertThat(pluginLoader.getClassesScanner(), equalTo(classesScanner));
@@ -126,7 +130,7 @@ public class PluginLoaderTest {
         try (InputStream inputStream = Files.newInputStream(resourcePath)) {
             assertNotNull(inputStream); //We should be able to open resource
         }
-        
+
     }
 
     private Manifest createTestLoadManifest(String pluginName, String pluginVersion) {
