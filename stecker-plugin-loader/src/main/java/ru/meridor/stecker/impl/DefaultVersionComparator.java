@@ -5,7 +5,12 @@ import ru.meridor.stecker.interfaces.VersionComparator;
 
 import java.util.Optional;
 
-import static ru.meridor.stecker.VersionRelation.*;
+import static ru.meridor.stecker.VersionRelation.EQUAL;
+import static ru.meridor.stecker.VersionRelation.GREATER_THAN;
+import static ru.meridor.stecker.VersionRelation.IN_RANGE;
+import static ru.meridor.stecker.VersionRelation.LESS_THAN;
+import static ru.meridor.stecker.VersionRelation.NOT_EQUAL;
+import static ru.meridor.stecker.VersionRelation.NOT_IN_RANGE;
 
 public class DefaultVersionComparator implements VersionComparator {
 

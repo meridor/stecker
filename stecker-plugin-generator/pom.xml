@@ -63,7 +63,6 @@
         <dependency>
             <groupId>ru.meridor.stecker</groupId>
             <artifactId>stecker-plugin-loader</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

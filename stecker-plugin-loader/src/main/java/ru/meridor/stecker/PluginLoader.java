@@ -1,16 +1,18 @@
 package ru.meridor.stecker;
 
-import ru.meridor.stecker.impl.*;
+import ru.meridor.stecker.impl.DefaultClassesScanner;
+import ru.meridor.stecker.impl.DefaultDependencyChecker;
+import ru.meridor.stecker.impl.DefaultManifestReader;
+import ru.meridor.stecker.impl.DefaultPluginsProvider;
+import ru.meridor.stecker.impl.DefaultResourcesScanner;
+import ru.meridor.stecker.impl.PluginRegistryContainer;
 import ru.meridor.stecker.interfaces.ClassesScanner;
 import ru.meridor.stecker.interfaces.DependencyChecker;
 import ru.meridor.stecker.interfaces.ManifestReader;
+import ru.meridor.stecker.interfaces.PluginsProvider;
 import ru.meridor.stecker.interfaces.ResourcesScanner;
 
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +27,12 @@ public class PluginLoader {
 
     private static final String DEFAULT_FILE_GLOB = "**/*.jar";
     private String fileGlob = DEFAULT_FILE_GLOB;
-    private static final String DEFAULT_CACHE_DIRECTORY = ".cache";
-    private final Path pluginDirectory;
+    public static final String DEFAULT_CACHE_DIRECTORY = ".cache";
+    private final Path pluginsDirectory;
     private final List<Class> extensionPoints = new ArrayList<>();
     private Path cacheDirectory;
+
+    private PluginsProvider pluginsProvider;
 
     private ManifestReader manifestReader;
 
@@ -40,22 +44,22 @@ public class PluginLoader {
 
     private String[] resourcesPatterns = new String[0];
 
-    private PluginLoader(Path pluginDirectory) {
-        this.pluginDirectory = pluginDirectory;
+    private PluginLoader(Path pluginsDirectory) {
+        this.pluginsDirectory = pluginsDirectory;
     }
 
     /**
      * Define the directory to search for plugins
      *
-     * @param pluginDirectory directory containing plugins
+     * @param pluginsDirectory directory containing plugins
      * @return this
      * @throws PluginException
      */
-    public static PluginLoader withPluginDirectory(Path pluginDirectory) throws PluginException {
-        if (pluginDirectory == null) {
-            throw new PluginException("Plugin directory can't be null");
+    public static PluginLoader withPluginDirectory(Path pluginsDirectory) throws PluginException {
+        if (pluginsDirectory == null) {
+            throw new PluginException("Plugins directory can't be null");
         }
-        return new PluginLoader(pluginDirectory);
+        return new PluginLoader(pluginsDirectory);
     }
 
     /**
@@ -66,6 +70,17 @@ public class PluginLoader {
      */
     public PluginLoader withFileGlob(String fileGlob) {
         this.fileGlob = fileGlob;
+        return this;
+    }
+
+    /**
+     * Define plugins provider instance to be used
+     *
+     * @param pluginsProvider plugins provider instance
+     * @return this
+     */
+    public PluginLoader withPluginsProvider(PluginsProvider pluginsProvider) {
+        this.pluginsProvider = pluginsProvider;
         return this;
     }
 
@@ -156,8 +171,8 @@ public class PluginLoader {
      *
      * @return plugin directory
      */
-    public Path getPluginDirectory() {
-        return pluginDirectory;
+    public Path getPluginsDirectory() {
+        return pluginsDirectory;
     }
 
     /**
@@ -170,13 +185,22 @@ public class PluginLoader {
     }
 
     /**
+     * Returns plugins provider instance used during loader run
+     *
+     * @return plugins provider instance
+     */
+    public PluginsProvider getPluginsProvider() {
+        return (pluginsProvider != null) ? pluginsProvider : new DefaultPluginsProvider(getFileGlob());
+    }
+
+    /**
      * Returns the cache directory to which we unpack plugin contents
      *
      * @return cache directory
      */
     public Path getCacheDirectory() {
         return (cacheDirectory != null) ?
-                cacheDirectory : pluginDirectory.resolve(DEFAULT_CACHE_DIRECTORY);
+                cacheDirectory : pluginsDirectory.resolve(DEFAULT_CACHE_DIRECTORY);
     }
 
     /**
@@ -244,7 +268,7 @@ public class PluginLoader {
      */
     public PluginRegistry load() throws PluginException {
 
-        List<Path> pluginFiles = getPluginFiles();
+        List<Path> pluginFiles = getPluginsProvider().provide(getPluginsDirectory());
 
         PluginRegistry pluginRegistry = new PluginRegistryContainer();
 
@@ -273,21 +297,6 @@ public class PluginLoader {
             }
         }
         return pluginRegistry;
-    }
-
-    private List<Path> getPluginFiles() throws PluginException {
-        try {
-            Path pluginDirectory = getPluginDirectory();
-            PathMatcher pathMatcher = FileSystems
-                    .getDefault()
-                    .getPathMatcher("glob:" + fileGlob);
-            return Files.list(pluginDirectory)
-                    .filter(pathMatcher::matches)
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new PluginException(e);
-        }
-
     }
 
 }

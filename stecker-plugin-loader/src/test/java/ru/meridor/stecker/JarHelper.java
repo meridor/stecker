@@ -53,8 +53,8 @@ public final class JarHelper {
     }
 
     private static void addClass(JarOutputStream outputStream, Class currentClass) throws Exception {
-        String resourceName = FILE_SEPARATOR + currentClass.getCanonicalName().replace(".", FILE_SEPARATOR) + CLASS_EXTENSION;
-        Path classFile = Paths.get(currentClass.getResource(resourceName).toURI());
+        String resourceName = classToResourceName(currentClass);
+        Path classFile = classToPath(currentClass);
         addPath(outputStream, classFile, resourceName);
     }
 
@@ -68,6 +68,14 @@ public final class JarHelper {
             }
         }
         outputStream.closeEntry();
+    }
+
+    public static String classToResourceName(Class currentClass) throws Exception {
+        return currentClass.getCanonicalName().replace(".", FILE_SEPARATOR) + CLASS_EXTENSION;
+    }
+
+    public static Path classToPath(Class currentClass) throws Exception {
+        return Paths.get(currentClass.getResource(FILE_SEPARATOR + classToResourceName(currentClass)).toURI());
     }
 
     public static Path createTestPluginFile(String pluginName, Path directory, Optional<Manifest> manifest) throws Exception {

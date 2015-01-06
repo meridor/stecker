@@ -20,11 +20,11 @@ public class ResourcesWatcherTest {
 
     @Rule
     public TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
-    
+
     private ResourcesWatcher resourcesWatcher;
-    
+
     private Path temporaryFile;
-    
+
     private TestHandler testHandler;
 
     @Before
@@ -42,14 +42,17 @@ public class ResourcesWatcherTest {
         resourcesWatcher.await();
         assertThat(testHandler.getChangesCount(), equalTo(1));
     }
-    
+
     @Test(timeout = 10000)
     public void testAwaitConcreteChange() throws Exception {
         scheduleFileChange();
         resourcesWatcher.await(temporaryFile);
         assertThat(testHandler.getChangesCount(), equalTo(1));
+        Thread.sleep(1500);
+        assertThat(testHandler.getChangesCount(), equalTo(1)); //Event should occur only once
+
     }
- 
+
     private void scheduleFileChange() {
         final long SCHEDULE_DELAY = 1000;
         new Timer().schedule(new TimerTask() {
@@ -63,22 +66,22 @@ public class ResourcesWatcherTest {
             }
         }, SCHEDULE_DELAY);
     }
-    
+
     private String randomString() {
         return String.valueOf(1e6 * Math.random());
     }
-    
+
     @After
     public void after() {
         if (resourcesWatcher != null) {
             resourcesWatcher.stop();
         }
     }
-    
+
     private static class TestHandler implements ResourceChangedHandler {
 
         private int changesCount = 0;
-        
+
         @Override
         public void onResourceChanged(Path resource) {
             changesCount++;
@@ -88,5 +91,5 @@ public class ResourcesWatcherTest {
             return changesCount;
         }
     }
-    
+
 }

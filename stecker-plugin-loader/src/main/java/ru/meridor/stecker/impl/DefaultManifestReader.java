@@ -10,7 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
@@ -35,12 +39,10 @@ public class DefaultManifestReader implements ManifestReader {
             pluginMetadata.addRequiredDependencies(getDependenciesList(manifest, ManifestField.DEPENDS));
             pluginMetadata.addConflictingDependencies(getDependenciesList(manifest, ManifestField.CONFLICTS));
 
-            Optional<String> rawProvides = getField(manifest, ManifestField.PROVIDES);
-            pluginMetadata.setProvidedDependency(
-                    rawProvides.isPresent() ?
-                            Optional.of(getDependency(rawProvides.get())) :
-                            Optional.empty()
-            );
+            String rawProvides = getField(manifest, ManifestField.PROVIDES);
+            if (rawProvides != null) {
+                pluginMetadata.setProvidedDependency(getDependency(rawProvides));
+            }
 
             return pluginMetadata;
         } catch (Exception e) {
@@ -53,12 +55,12 @@ public class DefaultManifestReader implements ManifestReader {
         return jarStream.getManifest();
     }
 
-    Optional<String> getField(Manifest manifest, ManifestField field) {
-        return Optional.ofNullable(manifest.getMainAttributes().getValue(field.getFieldName()));
+    String getField(Manifest manifest, ManifestField field) {
+        return manifest.getMainAttributes().getValue(field.getFieldName());
     }
 
     String getRequiredField(Manifest manifest, ManifestField field) throws ManifestException {
-        Optional<String> value = getField(manifest, field);
+        Optional<String> value = Optional.ofNullable(getField(manifest, field));
         if (!value.isPresent()) {
             throw new ManifestException(String.format("Required field %s not found in plugin manifest", field.getFieldName()));
         }
@@ -66,7 +68,7 @@ public class DefaultManifestReader implements ManifestReader {
     }
 
     List<Dependency> getDependenciesList(Manifest manifest, ManifestField field) throws ManifestException {
-        Optional<String> value = getField(manifest, field);
+        Optional<String> value = Optional.ofNullable(getField(manifest, field));
         if (!value.isPresent()) {
             return Collections.emptyList();
         }
@@ -92,7 +94,7 @@ public class DefaultManifestReader implements ManifestReader {
 
     Optional<ZonedDateTime> getDateField(Manifest manifest, ManifestField field) throws ManifestException {
         try {
-            Optional<String> value = getField(manifest, field);
+            Optional<String> value = Optional.ofNullable(getField(manifest, field));
             if (!value.isPresent()) {
                 return Optional.empty();
             }
