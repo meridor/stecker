@@ -22,7 +22,7 @@ Large applications very often provide plugin functionality. **Stecker** (which s
 * Add plugin loader to your Maven **pom.xml**:
 ```xml
 <dependency>
-    <groupId>ru.meridor.stecker</groupId>
+    <groupId>org.meridor.stecker</groupId>
     <artifactId>stecker-plugin-loader</artifactId>
     <version>${latest-version}</version>
 </dependency>
@@ -66,7 +66,7 @@ To easily create a plugin you need to use Maven plugin called **plugin-generator
 <build>
     <plugins>
         <plugin>
-            <groupId>ru.meridor.stecker</groupId>
+            <groupId>org.meridor.stecker</groupId>
             <artifactId>stecker-plugin-generator</artifactId>
             <version>${latest-plugin-version}</version>
             <executions>
