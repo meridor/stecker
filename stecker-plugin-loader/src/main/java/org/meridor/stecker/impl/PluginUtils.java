@@ -119,12 +119,17 @@ public class PluginUtils {
                 .map(FileSystems.getDefault()::getPathMatcher)
                 .collect(Collectors.toList());
 
-        for (PathMatcher pathMatcher : pathMatchers) {
-            List<Path> matchingPaths = Files.list(pluginImplementationDirectory)
-                    .filter(pathMatcher::matches)
-                    .collect(Collectors.toList());
-            matchingFiles.addAll(matchingPaths);
-        }
+        Files.walkFileTree(pluginImplementationDirectory, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
+                for (PathMatcher pathMatcher: pathMatchers) {
+                    if (pathMatcher.matches(file)) {
+                        matchingFiles.add(file);
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
 
         return matchingFiles;
     }
