@@ -27,7 +27,7 @@ public class DevClassesScanner implements ClassesScanner {
                 return Files.exists(classesPath) ?
                         PluginUtils.getMatchingClasses(extensionPoints, classesPath, classLoader) :
                         Collections.emptyMap();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 throw new PluginException(e);
             }
         }
