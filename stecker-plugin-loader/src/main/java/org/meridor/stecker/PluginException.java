@@ -13,7 +13,7 @@ public class PluginException extends Exception {
 
     private Optional<PluginMetadata> pluginMetadata = Optional.empty();
 
-    public PluginException(Throwable e) {
+    public PluginException(Exception e) {
         super(e);
     }
 
@@ -21,7 +21,7 @@ public class PluginException extends Exception {
         super(message);
     }
 
-    public PluginException(String message, Throwable e) {
+    public PluginException(String message, Exception e) {
         super(message, e);
     }
 

@@ -24,7 +24,7 @@ public class DefaultClassesScanner implements ClassesScanner {
             ClassLoader classLoader = getClassLoader(unpackedPluginDirectory, pluginImplementationDirectory);
             return PluginUtils.getMatchingClasses(extensionPoints, pluginImplementationDirectory, classLoader);
 
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new PluginException(e);
         }
     }
