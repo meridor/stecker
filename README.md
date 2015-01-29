@@ -14,7 +14,9 @@ Large applications very often provide plugin functionality. **Stecker** (which s
   * [Dependencies and Version Specification](#dependencies-and-version-specification)
   * [Extension Points](#extension-points)
 * [Glossary](#glossary)
-* [Internals](#internals)
+* [Development](#development)
+  * [Building](#building)
+  * [Internals](#internals)
 
 ## Getting Started
 ### Basic Usage
@@ -132,7 +134,14 @@ An extension point can be an ordinary class (i.e. class or interface) or an anno
 * **Dependency requirement** - a pair of plugin name and version range.
 * **Version range** or **version requirement** - a pair of start and end version which is matched against plugin version.
 
-## Internals
+## Development
+### Building
+To build Stecker from source you need to have Java 8 and Maven 3.2+ installed. To run the build clone the source and type:
+```bash
+$ mvn clean install
+```
+
+### Internals
 Internally plugin engine is based on the following interfaces:
 * **PluginsProvider** - return a list of paths to be considered as plugin files or directories.
 * **ManifestReader** - reads plugin manifest and returns an object with respective field values. Overriding default implementation can be used to change field names.
