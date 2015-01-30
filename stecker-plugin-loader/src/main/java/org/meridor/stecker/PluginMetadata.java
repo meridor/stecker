@@ -57,7 +57,7 @@ public interface PluginMetadata {
     /**
      * Returns maintainer email and name
      *
-     * @return email and name in the format: <b>John Smith <john.smith@example.com></b> or empty if not set
+     * @return email and name in the format: <b>John Smith &lt;john.smith@example.com&gt;</b> or empty if not set
      */
     Optional<String> getMaintainer();
 

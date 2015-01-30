@@ -53,7 +53,7 @@ public class PluginLoader {
      *
      * @param pluginsDirectory directory containing plugins
      * @return this
-     * @throws PluginException
+     * @throws org.meridor.stecker.PluginException when plugins directory is null
      */
     public static PluginLoader withPluginDirectory(Path pluginsDirectory) throws PluginException {
         if (pluginsDirectory == null) {
@@ -265,6 +265,7 @@ public class PluginLoader {
      * Returns {@link PluginRegistry} storing information about loaded classes
      *
      * @return plugin registry with loaded classes
+     * @throws org.meridor.stecker.PluginException when something goes wrong during plugins loading
      */
     public PluginRegistry load() throws PluginException {
 

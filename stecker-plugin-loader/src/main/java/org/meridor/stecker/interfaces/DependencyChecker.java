@@ -13,7 +13,7 @@ public interface DependencyChecker {
      *
      * @param pluginRegistry plugin registry object filled with data about all plugins
      * @param pluginMetadata checked plugin metadata
-     * @throws org.meridor.stecker.PluginException
+     * @throws org.meridor.stecker.PluginException when dependency issues occur
      */
     void check(PluginsAware pluginRegistry, PluginMetadata pluginMetadata) throws PluginException;
 

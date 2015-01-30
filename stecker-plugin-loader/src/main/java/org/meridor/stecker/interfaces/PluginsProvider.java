@@ -15,7 +15,7 @@ public interface PluginsProvider {
      *
      * @param baseDirectory root directory to scan for plugins
      * @return list of paths that seems to be plugins
-     * @throws org.meridor.stecker.PluginException
+     * @throws org.meridor.stecker.PluginException when something goes wrong during base directory scanning
      */
     List<Path> provide(Path baseDirectory) throws PluginException;
 

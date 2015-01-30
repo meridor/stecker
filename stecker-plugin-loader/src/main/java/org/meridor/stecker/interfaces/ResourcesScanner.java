@@ -16,7 +16,7 @@ public interface ResourcesScanner {
      *
      * @param path depending on context can be a file or directory path
      * @return a list of matching resources
-     * @throws PluginException
+     * @throws org.meridor.stecker.PluginException when something goes wrong during resources scanning
      */
     List<Path> scan(Path path) throws PluginException;
 

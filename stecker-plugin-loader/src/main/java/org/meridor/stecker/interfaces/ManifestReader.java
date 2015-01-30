@@ -12,6 +12,7 @@ public interface ManifestReader {
      *
      * @param pluginFile plugin file to process
      * @return plugin information in {@link org.meridor.stecker.PluginMetadata} format
+     * @throws org.meridor.stecker.PluginException when something goes wrong during manifest reading
      */
     PluginMetadata read(Path pluginFile) throws PluginException;
 
