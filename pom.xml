@@ -3,14 +3,19 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+    
     <groupId>org.meridor.stecker</groupId>
     <artifactId>stecker</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Stecker</name>
-    <description>Stecker is a lightweight plugin engine similar to OSGi but with no contracts and restrictions.
-    </description>
+    <description>Stecker is a lightweight plugin engine similar to OSGi but with no contracts and restrictions.</description>
 
     <properties>
         <compiler.version>1.8</compiler.version>
@@ -150,7 +155,7 @@
         <developer>
             <id>vania-pooh</id>
             <name>Ivan Krutov</name>
-            <email>ivan.krutov@meridor.ru</email>
+            <email>support@meridor.org</email>
             <organization>Meridor</organization>
         </developer>
     </developers>
