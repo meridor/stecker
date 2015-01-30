@@ -110,7 +110,7 @@ The only required fields in manifest are **Plugin-Name** and **Plugin-Version**.
 This section mainly relates to such plugin manifest fields as **Plugin-Depends**, **Plugin-Conflicts** and **Plugin-Provides**:
 * **Plugin-Depends** and **Plugin-Conflicts** should contain a list of dependency requirements expressed like the following:
 ```
-Plugin-Depends:some-plugin=[1.0;);another-plugin=2.1.1;one-more-plugin=(,3.0)
+Plugin-Depends:some-plugin=[1.0,);another-plugin=2.1.1;one-more-plugin=(,3.0)
 ```
 This notation means that current plugin depends on 3 plugins: some-plugin with version greater than or equal to 1.0; another-plugin 2.1.1 and one-more-plugin with version lower than 3.0. As you can see plugin name is separated from its version by `=` (equality) sign and different dependency requirements are delimited by `;` (semicolon). 
 * **Plugin-Provides** should contain only virtual plugin name:
@@ -120,7 +120,7 @@ Plugin-Provides:logger
 Dependency version is following [Maven version specification rules](http://maven.apache.org/enforcer/enforcer-rules/versionRanges.html) and can be expressed in two ways:
 * **Exact version**, e.g. `1.1`
 * **Version range**, e.g. `[1.0,2.0)`
-Version range is a pair of start and end versions enclosed in parentheses or square brackets or a pair of those. Required version should remain between start and end versions including them if square brackets are used and excluding them is case of parentheses. Some examples: `[1.0; 1.2]` - between 1.0 and 1.2 including them, `(,2.0)` - less than 2.0, `[2.2, 3.0)` - greater than or equals to 2.2 but less than 3.0. 
+Version range is a pair of start and end versions enclosed in parentheses or square brackets or a pair of those. Required version should remain between start and end versions including them if square brackets are used and excluding them is case of parentheses. Some examples: `[1.0, 1.2]` - between 1.0 and 1.2 including them, `(,2.0)` - less than 2.0, `[2.2, 3.0)` - greater than or equals to 2.2 but less than 3.0. 
 
 ### Extension Points
 An extension point can be an ordinary class (i.e. class or interface) or an annotation. In that case plugin loader returns classes that inherit from extension point class or are annotated by extension point annotation.
