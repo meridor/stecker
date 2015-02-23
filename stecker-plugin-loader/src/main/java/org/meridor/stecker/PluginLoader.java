@@ -11,11 +11,11 @@ import org.meridor.stecker.interfaces.DependencyChecker;
 import org.meridor.stecker.interfaces.ManifestReader;
 import org.meridor.stecker.interfaces.PluginsProvider;
 import org.meridor.stecker.interfaces.ResourcesScanner;
+import org.meridor.stecker.interfaces.ScanResult;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -285,13 +285,18 @@ public class PluginLoader {
             if (pluginMetadata.isPresent()) {
                 getDependencyChecker().check(pluginRegistry, pluginMetadata.get());
 
-                Map<Class, List<Class>> mapping = getClassesScanner().scan(
+                ScanResult scanResult = getClassesScanner().scan(
                         pluginMetadata.get().getPath(),
                         getExtensionPoints()
                 );
-                for (Class extensionPoint : mapping.keySet()) {
-                    pluginRegistry.addImplementations(pluginMetadata.get(), extensionPoint, mapping.get(extensionPoint));
+                for (Class extensionPoint : scanResult.getContents().getExtensionPoints()) {
+                    pluginRegistry.addImplementations(
+                            pluginMetadata.get(),
+                            extensionPoint,
+                            scanResult.getContents().getImplementations(extensionPoint)
+                    );
                 }
+                pluginRegistry.addClassLoader(pluginMetadata.get(), scanResult.getClassLoader());
 
                 List<Path> resources = getResourcesScanner().scan(pluginMetadata.get().getPath());
                 pluginRegistry.addResources(pluginMetadata.get(), resources);

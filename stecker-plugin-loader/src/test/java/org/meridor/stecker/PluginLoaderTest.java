@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -126,6 +127,9 @@ public class PluginLoaderTest {
         assertThat(pluginRegistry.getResources(PLUGIN_NAME), hasSize(1));
         Path resourcePath = pluginRegistry.getResources(PLUGIN_NAME).get(0);
         assertTrue(resourcePath.endsWith(JarHelper.TEST_RESOURCE_NAME));
+
+        assertTrue(pluginRegistry.getClassLoader(PLUGIN_NAME).isPresent());
+        assertFalse(pluginRegistry.getClassLoader("missing-plugin").isPresent());
 
         try (InputStream inputStream = Files.newInputStream(resourcePath)) {
             assertNotNull(inputStream); //We should be able to open resource

@@ -9,6 +9,8 @@ import org.meridor.stecker.impl.data.AnnotatedImpl;
 import org.meridor.stecker.impl.data.TestAnnotation;
 import org.meridor.stecker.impl.data.TestExtensionPoint;
 import org.meridor.stecker.impl.data.TestExtensionPointImpl;
+import org.meridor.stecker.interfaces.PluginImplementationsAware;
+import org.meridor.stecker.interfaces.ScanResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,11 +18,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class DevClassesScannerTest {
@@ -41,17 +42,18 @@ public class DevClassesScannerTest {
         createFiles();
 
         DevClassesScanner devClassesScanner = new DevClassesScanner(BuildToolType.MAVEN);
-        Map<Class, List<Class>> classesMap = devClassesScanner.scan(baseDirectory, EXTENSION_POINTS);
+        ScanResult scanResult = devClassesScanner.scan(baseDirectory, EXTENSION_POINTS);
 
-        assertThat(classesMap.entrySet(), hasSize(2));
+        assertThat(scanResult.getClassLoader(), notNullValue());
 
-        assertThat(classesMap, hasKey(TestAnnotation.class));
-        List<Class> pluginImplementations = classesMap.get(TestAnnotation.class);
+        PluginImplementationsAware contents = scanResult.getContents();
+        assertThat(contents.getExtensionPoints(), hasSize(2));
+
+        List<Class> pluginImplementations = contents.getImplementations(TestAnnotation.class);
         assertThat(pluginImplementations, hasSize(1));
         assertThat(pluginImplementations, contains(AnnotatedImpl.class));
 
-        assertThat(classesMap, hasKey(TestExtensionPoint.class));
-        List<Class> testExtensionPointImplementations = classesMap.get(TestExtensionPoint.class);
+        List<Class> testExtensionPointImplementations = contents.getImplementations(TestExtensionPoint.class);
         assertThat(testExtensionPointImplementations, hasSize(1));
         assertThat(testExtensionPointImplementations, contains(TestExtensionPointImpl.class));
 
@@ -60,16 +62,16 @@ public class DevClassesScannerTest {
     @Test
     public void testPluginDirectoryMissing() throws PluginException {
         DevClassesScanner devClassesScanner = new DevClassesScanner(BuildToolType.MAVEN);
-        Map<Class, List<Class>> classesMap = devClassesScanner.scan(Paths.get("missing-directory"), EXTENSION_POINTS);
-        assertThat(classesMap.keySet(), hasSize(0));
+        ScanResult scanResult = devClassesScanner.scan(Paths.get("missing-directory"), EXTENSION_POINTS);
+        assertThat(scanResult.getContents().getExtensionPoints(), hasSize(0));
     }
 
     @Test
     public void testClassesDirectoryMissing() throws Exception {
         createBaseDirectory();
         DevClassesScanner devClassesScanner = new DevClassesScanner(BuildToolType.MAVEN);
-        Map<Class, List<Class>> classesMap = devClassesScanner.scan(baseDirectory, EXTENSION_POINTS);
-        assertThat(classesMap.keySet(), hasSize(0));
+        ScanResult scanResult = devClassesScanner.scan(baseDirectory, EXTENSION_POINTS);
+        assertThat(scanResult.getContents().getExtensionPoints(), hasSize(0));
     }
 
     private void createBaseDirectory() throws IOException {

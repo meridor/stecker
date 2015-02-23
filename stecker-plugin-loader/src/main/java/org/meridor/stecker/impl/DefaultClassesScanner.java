@@ -2,10 +2,11 @@ package org.meridor.stecker.impl;
 
 import org.meridor.stecker.PluginException;
 import org.meridor.stecker.interfaces.ClassesScanner;
+import org.meridor.stecker.interfaces.PluginImplementationsAware;
+import org.meridor.stecker.interfaces.ScanResult;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 public class DefaultClassesScanner implements ClassesScanner {
 
@@ -16,13 +17,14 @@ public class DefaultClassesScanner implements ClassesScanner {
     }
 
     @Override
-    public Map<Class, List<Class>> scan(Path pluginFile, List<Class> extensionPoints) throws PluginException {
+    public ScanResult scan(Path pluginFile, List<Class> extensionPoints) throws PluginException {
         try {
             Path unpackedPluginDirectory = PluginUtils.unpackPlugin(pluginFile, cacheDirectory);
             Path pluginImplementationDirectory = PluginUtils.getPluginImplementationDirectory(unpackedPluginDirectory);
 
             ClassLoader classLoader = getClassLoader(unpackedPluginDirectory, pluginImplementationDirectory);
-            return PluginUtils.getMatchingClasses(extensionPoints, pluginImplementationDirectory, classLoader);
+            PluginImplementationsAware pluginImplementationsAware = PluginUtils.getMatchingClasses(extensionPoints, pluginImplementationDirectory, classLoader);
+            return new DefaultScanResult(classLoader, pluginImplementationsAware);
 
         } catch (Exception e) {
             throw new PluginException(e);

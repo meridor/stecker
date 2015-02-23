@@ -25,16 +25,16 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class CreateMojoTest {
-    
+
     private static final String ARTIFACT_FILE = "javax.servlet-api-3.1.0.jar";
-    
+
     @Rule
     public MojoRule rule = new MojoRule();
 
     private Path targetDir;
-    
+
     private MavenProject mavenProject;
-    
+
     @Before
     public void prepareData() throws Exception {
         Path pomPath = getResource("pom.xml").get();
@@ -62,21 +62,21 @@ public class CreateMojoTest {
         artifact.setFile(artifactFile.toFile());
         mavenProject.getArtifacts().add(artifact);
     }
-    
+
     @Test
     public void testExecute() throws Exception {
         CreateMojo mojo = (CreateMojo) rule.lookupConfiguredMojo(mavenProject, "create");
         assertThat(mojo, notNullValue());
         mojo.execute();
-        
+
         Path generatedDataDir = targetDir.resolve("plugin-generator");
         assertThat(generatedDataDir, exists());
         assertThat(generatedDataDir, isDirectory());
-        
+
         Path pluginFile = generatedDataDir.resolve("plugin-test-1.0.jar");
         assertThat(pluginFile, exists());
         assertThat(pluginFile, isRegularFile());
-        
+
         Path pluginDataDir = generatedDataDir.resolve("data");
         assertThat(pluginDataDir, exists());
         assertThat(pluginDataDir, isDirectory());
@@ -84,18 +84,18 @@ public class CreateMojoTest {
         Path libDir = pluginDataDir.resolve("lib");
         assertThat(libDir, exists());
         assertThat(libDir, isDirectory());
-        
+
         Path dependencyFile = libDir.resolve(ARTIFACT_FILE);
         assertThat(dependencyFile, exists());
         assertThat(dependencyFile, isRegularFile());
-        
+
     }
-    
+
     private Optional<Path> getResource(String resourceName) throws URISyntaxException {
         URL resource = getClass().getClassLoader().getResource(resourceName);
         return (resource != null) ? Optional.of(Paths.get(resource.toURI())) : Optional.empty();
     }
-    
+
     @After
     public void removeData() throws Exception {
         if (targetDir != null && Files.exists(targetDir)) {

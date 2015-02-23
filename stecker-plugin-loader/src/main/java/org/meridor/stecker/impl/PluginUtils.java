@@ -1,6 +1,7 @@
 package org.meridor.stecker.impl;
 
 import org.meridor.stecker.PluginException;
+import org.meridor.stecker.interfaces.PluginImplementationsAware;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,7 +123,7 @@ public class PluginUtils {
         Files.walkFileTree(pluginImplementationDirectory, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
-                for (PathMatcher pathMatcher: pathMatchers) {
+                for (PathMatcher pathMatcher : pathMatchers) {
                     if (pathMatcher.matches(file)) {
                         matchingFiles.add(file);
                     }
@@ -135,7 +136,7 @@ public class PluginUtils {
     }
 
 
-    public static Map<Class, List<Class>> getMatchingClasses(List<Class> extensionPoints, Path pluginImplementationDirectory, ClassLoader classLoader) throws Exception {
+    public static PluginImplementationsAware getMatchingClasses(List<Class> extensionPoints, Path pluginImplementationDirectory, ClassLoader classLoader) throws Exception {
         Map<Class, List<Class>> matchingClasses = new HashMap<>();
 
         List<Path> classFiles = new ArrayList<>();
@@ -162,7 +163,7 @@ public class PluginUtils {
             }
         }
 
-        return matchingClasses;
+        return new ClassesRegistry(matchingClasses);
     }
 
     private static String getClassName(Path pluginImplementationDirectory, Path classFile) {
