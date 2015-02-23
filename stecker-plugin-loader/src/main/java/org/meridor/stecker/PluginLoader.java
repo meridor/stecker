@@ -290,11 +290,11 @@ public class PluginLoader {
                         getExtensionPoints()
                 );
                 for (Class extensionPoint : mapping.keySet()) {
-                    pluginRegistry.addImplementations(extensionPoint, mapping.get(extensionPoint));
+                    pluginRegistry.addImplementations(pluginMetadata.get(), extensionPoint, mapping.get(extensionPoint));
                 }
 
                 List<Path> resources = getResourcesScanner().scan(pluginMetadata.get().getPath());
-                pluginRegistry.addResources(pluginMetadata.get().getName(), resources);
+                pluginRegistry.addResources(pluginMetadata.get(), resources);
             }
         }
         return pluginRegistry;

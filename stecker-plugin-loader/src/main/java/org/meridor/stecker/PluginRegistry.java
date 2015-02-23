@@ -15,10 +15,11 @@ public interface PluginRegistry extends PluginsAware, ImplementationsAware, Reso
     /**
      * Add extension point implementations to registry
      *
+     * @param pluginMetadata plugin metadata object
      * @param extensionPoint        extension point class
      * @param implementationClasses a list of implementation classes
      */
-    void addImplementations(Class extensionPoint, List<Class> implementationClasses);
+    void addImplementations(PluginMetadata pluginMetadata, Class extensionPoint, List<Class> implementationClasses);
 
     /**
      * Adds information about new plugin
@@ -31,9 +32,9 @@ public interface PluginRegistry extends PluginsAware, ImplementationsAware, Reso
     /**
      * Add resources for specific plugin
      *
-     * @param pluginName plugin name
+     * @param pluginMetadata plugin metadata object
      * @param resources  plugin resources
      */
-    void addResources(String pluginName, List<Path> resources);
+    void addResources(PluginMetadata pluginMetadata, List<Path> resources);
 
 }
