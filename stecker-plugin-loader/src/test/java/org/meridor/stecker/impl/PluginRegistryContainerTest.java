@@ -59,7 +59,7 @@ public class PluginRegistryContainerTest {
     @Test
     public void testExtensionPointsRegistry() {
         PluginRegistry pluginRegistry = new PluginRegistryContainer();
-        
+
         //One plugin
         PluginMetadata pluginMetadata = getMockPluginMetadata(PLUGIN_NAME);
         pluginRegistry.addImplementations(pluginMetadata, TestExtensionPoint.class, new ArrayList<Class>() {
@@ -67,7 +67,7 @@ public class PluginRegistryContainerTest {
                 add(TestExtensionPointImpl.class);
             }
         });
-        
+
         //Another plugin
         PluginMetadata anotherPluginMetadata = getMockPluginMetadata(ANOTHER_PLUGIN_NAME);
         pluginRegistry.addImplementations(anotherPluginMetadata, TestExtensionPoint.class, new ArrayList<Class>() {
@@ -81,7 +81,7 @@ public class PluginRegistryContainerTest {
                 add(AtomicInteger.class);
             }
         });
-        
+
         assertThat(pluginRegistry.getExtensionPoints(), hasSize(2));
         assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), hasSize(2));
         assertThat(pluginRegistry.getImplementations(TestExtensionPoint.class), containsInAnyOrder(TestExtensionPointImpl.class, String.class));
@@ -90,7 +90,7 @@ public class PluginRegistryContainerTest {
 
         assertThat(pluginRegistry.getExtensionPoints(MISSING_PLUGIN_NAME), empty());
         assertThat(pluginRegistry.getImplementations(MISSING_PLUGIN_NAME, TestExtensionPoint.class), empty());
-        
+
         assertThat(pluginRegistry.getExtensionPoints(PLUGIN_NAME), hasSize(1));
         assertThat(pluginRegistry.getExtensionPoints(PLUGIN_NAME), contains(TestExtensionPoint.class));
         assertThat(pluginRegistry.getImplementations(PLUGIN_NAME, TestExtensionPoint.class), hasSize(1));
@@ -103,7 +103,7 @@ public class PluginRegistryContainerTest {
         assertThat(pluginRegistry.getImplementations(ANOTHER_PLUGIN_NAME, Number.class), hasSize(2));
         assertThat(pluginRegistry.getImplementations(ANOTHER_PLUGIN_NAME, Number.class), containsInAnyOrder(Integer.class, AtomicInteger.class));
     }
-    
+
     private PluginMetadata getMockPluginMetadata(String pluginName) {
         PluginMetadata pluginMetadata = mock(PluginMetadata.class);
         when(pluginMetadata.getName()).thenReturn(pluginName);

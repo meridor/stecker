@@ -4,7 +4,6 @@ import org.meridor.stecker.PluginException;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Returns a list of {@link Class}es corresponding to specified extension points
@@ -20,6 +19,6 @@ public interface ClassesScanner {
      * @return mapping from extension point to implementations from a plugin
      * @throws org.meridor.stecker.PluginException when something goes wrong during classes scanning
      */
-    Map<Class, List<Class>> scan(Path pluginFile, List<Class> extensionPoints) throws PluginException;
+    ScanResult scan(Path pluginFile, List<Class> extensionPoints) throws PluginException;
 
 }

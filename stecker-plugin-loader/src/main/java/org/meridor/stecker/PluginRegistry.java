@@ -1,5 +1,6 @@
 package org.meridor.stecker;
 
+import org.meridor.stecker.interfaces.ClassLoaderAware;
 import org.meridor.stecker.interfaces.ImplementationsAware;
 import org.meridor.stecker.interfaces.PluginsAware;
 import org.meridor.stecker.interfaces.ResourcesAware;
@@ -10,12 +11,12 @@ import java.util.List;
 /**
  * Stores all information about loaded plugins
  */
-public interface PluginRegistry extends PluginsAware, ImplementationsAware, ResourcesAware {
+public interface PluginRegistry extends PluginsAware, ImplementationsAware, ResourcesAware, ClassLoaderAware {
 
     /**
      * Add extension point implementations to registry
      *
-     * @param pluginMetadata plugin metadata object
+     * @param pluginMetadata        plugin metadata object
      * @param extensionPoint        extension point class
      * @param implementationClasses a list of implementation classes
      */
@@ -33,8 +34,16 @@ public interface PluginRegistry extends PluginsAware, ImplementationsAware, Reso
      * Add resources for specific plugin
      *
      * @param pluginMetadata plugin metadata object
-     * @param resources  plugin resources
+     * @param resources      plugin resources
      */
     void addResources(PluginMetadata pluginMetadata, List<Path> resources);
+
+    /**
+     * Adds class loader instance for specific plugin
+     *
+     * @param pluginMetadata plugin metadata object
+     * @param classLoader    class loader instance corresponding to current plugin
+     */
+    void addClassLoader(PluginMetadata pluginMetadata, ClassLoader classLoader);
 
 }

@@ -7,6 +7,7 @@ import org.meridor.stecker.interfaces.Dependency;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +23,14 @@ public class PluginRegistryContainer implements PluginRegistry {
 
     private final Map<String, List<Path>> resources = new HashMap<>();
 
+    private final Map<String, ClassLoader> classLoaders = new HashMap<>();
+
     @Override
     public void addImplementations(PluginMetadata pluginMetadata, Class extensionPoint, List<Class> implementationClasses) {
         if (!registry.containsKey(pluginMetadata.getName())) {
             registry.put(pluginMetadata.getName(), new ClassesRegistry(extensionPoint, implementationClasses));
         } else {
-            registry.get(pluginMetadata.getName()).put(extensionPoint, implementationClasses);
+            registry.get(pluginMetadata.getName()).addImplementations(extensionPoint, implementationClasses);
         }
     }
 
@@ -65,7 +68,7 @@ public class PluginRegistryContainer implements PluginRegistry {
     @Override
     public List<Class> getExtensionPoints() {
         return registry.values().stream()
-                .flatMap(cr -> cr.keySet().stream())
+                .flatMap(cr -> cr.getExtensionPoints().stream())
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -80,8 +83,8 @@ public class PluginRegistryContainer implements PluginRegistry {
 
     @Override
     public List<Class> getExtensionPoints(String pluginName) {
-        return registry.containsKey(pluginName) ? 
-                new ArrayList<>(registry.get(pluginName).keySet()) :
+        return registry.containsKey(pluginName) ?
+                new ArrayList<>(registry.get(pluginName).getExtensionPoints()) :
                 Collections.emptyList();
     }
 
@@ -106,26 +109,16 @@ public class PluginRegistryContainer implements PluginRegistry {
 
     @Override
     public List<Path> getResources() {
-        return resources.values().stream().reduce(new ArrayList<>(), (paths, paths2) -> {
-            paths.addAll(paths2);
-            return paths;
-        });
+        return resources.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
-    
-    private static class ClassesRegistry extends HashMap<Class, List<Class>> {
-        
-        public ClassesRegistry(Class extensionPoint, List<Class> implementationClasses) {
-            if (!containsKey(extensionPoint)) {
-                put(extensionPoint, new ArrayList<>());
-            }
-            get(extensionPoint).addAll(implementationClasses);
-        }
-        
-        public List<Class> getImplementations(Class extensionPoint) {
-            return containsKey(extensionPoint) ?
-                    get(extensionPoint) : Collections.emptyList();
-        }
-        
+
+    @Override
+    public void addClassLoader(PluginMetadata pluginMetadata, ClassLoader classLoader) {
+        classLoaders.put(pluginMetadata.getName(), classLoader);
     }
-    
+
+    @Override
+    public Optional<ClassLoader> getClassLoader(String pluginName) {
+        return Optional.ofNullable(classLoaders.get(pluginName));
+    }
 }
