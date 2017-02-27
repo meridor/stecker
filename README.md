@@ -104,6 +104,7 @@ Plugin manifest fields are highly influenced by ***.deb** package description [f
 * **Plugin-Depends** - a list of plugins current plugin depends on
 * **Plugin-Conflicts** - a list of plugins which conflict with current plugin
 * **Plugin-Provides** - virtual plugin name which current plugin provides
+
 The only required fields in manifest are **Plugin-Name** and **Plugin-Version**.
 
 ### Dependencies and Version Specification
