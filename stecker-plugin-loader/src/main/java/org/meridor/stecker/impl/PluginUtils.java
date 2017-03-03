@@ -4,8 +4,6 @@ import org.meridor.stecker.PluginException;
 import org.meridor.stecker.interfaces.PluginImplementationsAware;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URL;
@@ -87,14 +85,7 @@ public class PluginUtils {
                     Files.createDirectories(parentDirectory);
                 }
 
-                try (
-                        InputStream is = jarFile.getInputStream(entry);
-                        OutputStream os = Files.newOutputStream(outputPath)
-                ) {
-                    while (is.available() > 0) {
-                        os.write(is.read());
-                    }
-                }
+                Files.copy(jarFile.getInputStream(entry), outputPath);
 
             }
         }
